@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,4 +41,12 @@ public class Course {
 	)
 	private List<User> usuarios;
 	
+	@OneToMany(fetch=FetchType.LAZY,
+			cascade = {
+					CascadeType.MERGE,
+					CascadeType.PERSIST
+					}
+			, mappedBy = "curso"
+			)
+	private List<Cuestionario> cuestionarios;
 }
