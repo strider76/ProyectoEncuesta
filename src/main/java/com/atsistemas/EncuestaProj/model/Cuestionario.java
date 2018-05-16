@@ -50,4 +50,12 @@ public class Cuestionario {
 			)
 	private List<Pregunta> preguntas;
 	
+	@ManyToMany(fetch=FetchType.LAZY,
+				cascade = {
+						CascadeType.MERGE,
+						CascadeType.PERSIST
+				},
+				mappedBy="cuestionarios")
+	private List<Tag> etiquetas;
+	
 }
