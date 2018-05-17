@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,4 +49,12 @@ public class Pregunta {
 			})
 	@JoinColumn(name="id_tag")
 	private Tag etiqueta;
+	
+	@OneToMany(fetch=FetchType.LAZY,
+			cascade = {
+					CascadeType.MERGE,
+					CascadeType.PERSIST
+			}, mappedBy = "pregunta")
+	@Size(min=1,max=4)
+	private List<Respuesta> respuestas;
 }
