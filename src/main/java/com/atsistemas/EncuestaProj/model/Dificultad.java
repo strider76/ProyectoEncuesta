@@ -2,7 +2,6 @@ package com.atsistemas.EncuestaProj.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,13 +26,9 @@ public class Dificultad {
 	@Column(nullable=false, unique=true)
 	private String dificultad;
 	
-	@OneToMany(fetch=FetchType.LAZY,
-				cascade = {
-						CascadeType.MERGE,
-						CascadeType.PERSIST
-				},
-				mappedBy="dificultad")
-	private List<Tag> etiquetas;
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="dificultad")
+	private List<Pregunta> Preguntas;
+	
 	
 	
 }

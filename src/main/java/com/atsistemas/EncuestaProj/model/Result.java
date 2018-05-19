@@ -1,39 +1,32 @@
 package com.atsistemas.EncuestaProj.model;
 
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-
-import org.springframework.validation.annotation.Validated;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Validated
-public class Respuesta {
+@Entity
+public class Result {
 
 	@Id
 	@GeneratedValue
-	private Integer idResultado;
-	
-	@Column(nullable=false)
-	private String respuesta;
-	
-	@Column(name="correcta")
-	private Boolean esCorrecta;
-	
+	private Integer idResult;
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id_pregunta")
-	private Pregunta pregunta;
+	@JoinColumn(name="id_user")
+	private User user;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_cuestionario")
+	private Cuestionario cuestionario;
+	@Size(min=0,max=10)
+	private Integer puntuacion;
 }

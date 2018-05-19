@@ -2,14 +2,13 @@ package com.atsistemas.EncuestaProj.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
@@ -33,28 +32,18 @@ public class Pregunta {
 	@Column(nullable=false)
 	private String pregunta;
 	
-	@ManyToMany(fetch=FetchType.LAZY,
-				cascade = {
-						CascadeType.MERGE,
-						CascadeType.PERSIST
-				},
-				mappedBy="preguntas"
-			)
-	private List<Cuestionario> cuestionario;
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="pregunta")
+	private List<CuestionarioPregunta> cuestionarios;
 	
-	@ManyToOne(fetch=FetchType.LAZY,
-			cascade = {
-					CascadeType.MERGE,
-					CascadeType.PERSIST
-			})
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_tag")
-	private Tag etiqueta;
+	private Tag tag;
 	
-	@OneToMany(fetch=FetchType.LAZY,
-			cascade = {
-					CascadeType.MERGE,
-					CascadeType.PERSIST
-			}, mappedBy = "pregunta")
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_dificultad")
+	private Dificultad dificultad;
+	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy = "pregunta")
 	@Size(min=1,max=4)
 	private List<Respuesta> respuestas;
 }
