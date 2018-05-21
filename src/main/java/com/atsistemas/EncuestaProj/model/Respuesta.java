@@ -15,11 +15,13 @@ import org.springframework.validation.annotation.Validated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @Validated
 public class Respuesta {
 
@@ -36,4 +38,5 @@ public class Respuesta {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_pregunta")
 	private Pregunta pregunta;
+	
 }

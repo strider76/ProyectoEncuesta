@@ -7,15 +7,18 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @Entity
 public class User {
 
@@ -32,8 +35,8 @@ public class User {
 	@Column(nullable=false)
 	private String password;
 	
-	@OneToMany(fetch= FetchType.LAZY, mappedBy = "user")
-	private List<UserCourse> courses;
+	@ManyToMany(fetch= FetchType.LAZY, mappedBy = "users")
+	private List<Course> courses;
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="user")
 	private List<Result> results;
