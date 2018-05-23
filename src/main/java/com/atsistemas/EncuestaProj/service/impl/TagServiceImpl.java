@@ -38,9 +38,9 @@ public class TagServiceImpl implements TagService, InitializingBean {
 		Tag tag2 = new Tag();
 		Tag tag3 = new Tag();
 		
-		tag1.setNombre("tag1");
-		tag2.setNombre("tag2");
-		tag3.setNombre("tag3");
+		tag1.setName("tag1");
+		tag2.setName("tag2");
+		tag3.setName("tag3");
 		
 		LOG.info("DicicultadServiceImpl - test() - add Tag 1 -" + addTag(tag1));
 		LOG.info("DicicultadServiceImpl - test() - add Tag 2 -" + addTag(tag2));
@@ -121,7 +121,7 @@ public class TagServiceImpl implements TagService, InitializingBean {
 		Optional<Tag> tagSearch = tagDAO.findById(idTag);
 		if (tagSearch.isPresent()) {
 			Tag tagOrigin = tagSearch.get();
-			tagOrigin.setNombre(tag.getNombre());
+			tagOrigin.setName(tag.getName());
 			tagOrigin.setCuestionarios(tag.getCuestionarios());
 			tagOrigin.setPreguntas(tag.getPreguntas());
 			tagOrigin = tagDAO.save(tagOrigin);

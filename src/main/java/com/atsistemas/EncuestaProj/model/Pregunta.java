@@ -15,18 +15,14 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+
 
 @Getter
 @Setter
-@NoArgsConstructor
-@ToString
 @Entity
 public class Pregunta {
 
-	public static final String FK_ETIQUETA = "id_etiqueta";
 	
 	@Id
 	@GeneratedValue
@@ -49,4 +45,11 @@ public class Pregunta {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy = "pregunta")
 	@Size(min=0,max=4)
 	private List<Respuesta> respuestas;
+
+	@Override
+	public String toString() {
+		return "Pregunta [idPregunta=" + idPregunta + ", pregunta=" + pregunta + "]";
+	}
+	
+	
 }

@@ -10,14 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@ToString
 @Entity
 public class Dificultad {
 
@@ -30,6 +26,12 @@ public class Dificultad {
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="dificultad")
 	private List<Pregunta> Preguntas;
+
+	@Override
+	public String toString() {
+		return "Dificultad [idDificultad=" + idDificultad + ", dificultad=" + dificultad + "]";
+	}
+
 	
 	
 	

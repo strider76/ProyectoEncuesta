@@ -1,129 +1,69 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
-
-import javax.transaction.Transactional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.atsistemas.EncuestaProj.dao.UserDAO;
-import com.atsistemas.EncuestaProj.model.Course;
 import com.atsistemas.EncuestaProj.model.User;
 import com.atsistemas.EncuestaProj.service.UserService;
 
 @Service
-public class UserServiceImpl implements UserService, InitializingBean {
+public class UserServiceImpl implements UserService {
 
 	@Autowired
-	UserDAO userDAO;
+	private UserDAO userDAO;
 	
 	private final static Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		test();
-		
+	public User create(User model) {
+		User result = userDAO.save(model);
+		LOG.info("UserServiceImpl - create: " + result);
+		return result;
 	}
 
 	@Override
-	public void test() {
-		User user = new User();
-		user.setEmail("manuel@betangible.com");
-		user.setUserName("strider");
-		user.setPassword("1234");
-		
-		userDAO.save(user);
-		Optional<User> userBusqueda = userDAO.findOneByEmail("manuel@betangible.com");
-		LOG.info(userBusqueda.isPresent()? user.toString() : "Objeto user no encontrado");
-		
-	}
-	
-	@Override
-	@Transactional
-	public User addUser(User user) {
-		User userSave = userDAO.save(user);
-		LOG.info("UserServiceImpl - addUser: Añadido nuevo usuario: " + userSave.toString());
-		return userSave;
+	public Optional<User> findById(Integer id) {
+		Optional<User> user = userDAO.findById(id);
+		LOG.info("UserServiceImpl - findById(" + id +"): "+ (user.isPresent()?"Encontrado " + user.get():"No Encontrado"));
+		return user;
 	}
 
 	@Override
-	public Boolean removeUser(Integer idUser) {
-		Optional<User> usuarioBuscar = userDAO.findById(idUser);
-		if (usuarioBuscar.isPresent()){
-			userDAO.delete(usuarioBuscar.get());
-			LOG.info("UserServiceImpl - removeUser: Borrado Usuario con ID " + idUser);
-			return true;
-		} else {
-			LOG.info("UserServiceImpl - removeUser: Error no existe Usuario con ID " + idUser);
-			return false;
-		}
-			
-		
+	public Set<User> findAll(Pageable pagina) {
+		int numPagina = pagina.getPageNumber();
+		int sizePagina = pagina.getPageSize();
+		Set<User> listUser = userDAO.findAll(PageRequest.of(numPagina, sizePagina)).stream().collect(Collectors.toSet());
+		LOG.info("UserServiceImpl - findByAll(page=" + numPagina +",sizePagina=" + sizePagina +"): Total" + listUser.size());
+		return listUser;
 	}
 
 	@Override
-	@Transactional
-	public Optional<User> updateUser(Integer idUser, User user) {
-		Optional<User> usuarioBuscar = userDAO.findById(idUser);
-		if (usuarioBuscar.isPresent()){
-			User userEncontrado =usuarioBuscar.get();
-			userEncontrado.setUserName(user.getUserName());
-			userEncontrado.setPassword(user.getPassword());
-			userEncontrado.setEmail(user.getEmail());
-			userEncontrado.setCourses(user.getCourses());
-			userEncontrado.setResults(user.getResults());
-			userEncontrado = userDAO.save(userEncontrado);
-			LOG.info("UserServiceImpl - updateUser: Modificado Usuario " + userEncontrado);
-			return Optional.of(userDAO.save(userEncontrado));
-		} else {
-			LOG.info("UserServiceImpl - updateUser: Error no encontrado Usuario con ID" + idUser);
-			return Optional.empty();
-		}
+	public void update(User model) {
+		LOG.info("UserServiceImpl - update --PARAMS model=" + model);
+		model = userDAO.save(model);
+		LOG.info("UserServiceImpl - update --realizado model=" + model );
 	}
 
 	@Override
-	public List<User> findAllUser() {
-		List<User> allUsers = new ArrayList<>();
-		Iterator<User> iterador = userDAO.findAll().iterator();
-		while (iterador.hasNext())
-			allUsers.add(iterador.next());
-		return allUsers;
+	public void delete(User model) {
+		userDAO.delete(model);
+		LOG.info("UserServiceImpl - delete(" + model +"): ");
+
 	}
 
 	@Override
-	public Optional<User> findUserById(Integer idUser) {
-		return userDAO.findById(idUser);
-	}
-
-	@Override
-	public Optional<User> findUserByEmail(String email) {
-		return userDAO.findOneByEmail(email);
-	}
-
-	@Override
-	public boolean userAccess(String userName, String passowrd) {
-		Optional<User> user = userDAO.findOneByUserName(userName);
-		if (user.isPresent()) 
-			return user.get().getPassword().equals(passowrd);
-		else
-			return false;
-	}
-
-	@Override
-	public List<Course> findAllCourse(Integer idUser) {
-		List<Course> userCourses = new ArrayList<>();
-		Optional<User> userSearch = userDAO.findById(idUser);
-		if (userSearch.isPresent()) {
-			userCourses = userSearch.get().getCourses();
-		}
-		return userCourses;
+	public boolean userAccess(String userName, String password) {
+		Optional<User> user = userDAO.findOneByUserNameOrderByUserName(userName);
+		return (user.isPresent()?user.get().getPassword().equals(password): false);
 	}
 
 }

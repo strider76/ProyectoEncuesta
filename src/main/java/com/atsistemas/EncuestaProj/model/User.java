@@ -11,14 +11,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+
 
 @Getter
 @Setter
-@NoArgsConstructor
-@ToString
 @Entity
 public class User {
 
@@ -40,4 +37,11 @@ public class User {
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="user")
 	private List<Result> results;
+
+	@Override
+	public String toString() {
+		return "User [idUser=" + idUser + ", email=" + email + ", userName=" + userName + "]";
+	}
+	
+	
 }

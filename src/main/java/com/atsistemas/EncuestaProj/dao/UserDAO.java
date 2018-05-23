@@ -11,6 +11,6 @@ import com.atsistemas.EncuestaProj.model.User;
 public interface UserDAO extends PagingAndSortingRepository<User, Integer> {
 
 	Optional<User> findOneByEmail(String email);
-	Optional<User> findOneByUserName(String userName);
+	Optional<User> findOneByUserNameOrderByUserName(String userName);
 	
 }

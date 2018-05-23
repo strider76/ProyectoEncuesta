@@ -15,14 +15,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@ToString
 @Entity
 public class Cuestionario {
 
@@ -51,5 +47,12 @@ public class Cuestionario {
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="cuestionario")
 	private List<Result> results;
+
+	@Override
+	public String toString() {
+		return "Cuestionario [idCuestionario=" + idCuestionario + ", identificador=" + identificador + "]";
+	}
+	
+	
 	
 }
