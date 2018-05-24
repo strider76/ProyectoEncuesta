@@ -1,7 +1,6 @@
 package com.atsistemas.EncuestaProj.model;
 
-import java.util.List;
-
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,10 +31,10 @@ public class Course {
 	@JoinTable(name="user_course",
 				joinColumns=@JoinColumn(name="id_course"),
 				inverseJoinColumns=@JoinColumn(name="id_user"))
-	private List<User> users;
+	private Set<User> users;
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy = "course")
-	private List<Cuestionario> cuestionarios;
+	private Set<Cuestionario> cuestionarios;
 
 	@Override
 	public String toString() {

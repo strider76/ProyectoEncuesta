@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.atsistemas.EncuestaProj.dao.UserDAO;
+import com.atsistemas.EncuestaProj.dto.UserDTO;
 import com.atsistemas.EncuestaProj.model.User;
 import com.atsistemas.EncuestaProj.service.UserService;
 
@@ -47,9 +48,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void update(User model) {
+	public void update(User model,UserDTO dto) {
 		LOG.info("UserServiceImpl - update --PARAMS model=" + model);
-		model = userDAO.save(model);
+		model.setUserName(dto.getUserName());
+		model.setPassword(dto.getPassword());
+		model.setEmail(dto.getEmail());
+		userDAO.save(model);
 		LOG.info("UserServiceImpl - update --realizado model=" + model );
 	}
 

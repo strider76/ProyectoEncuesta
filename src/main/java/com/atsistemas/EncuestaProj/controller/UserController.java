@@ -1,33 +1,30 @@
 package com.atsistemas.EncuestaProj.controller;
 
+import java.util.Optional;
 import java.util.Set;
 
-import javax.websocket.server.PathParam;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.WebRequest;
 
 import com.atsistemas.EncuestaProj.dto.UserDTO;
 import com.atsistemas.EncuestaProj.dto.UserDTOPost;
+import com.atsistemas.EncuestaProj.excepciones.UserNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.UserMapper;
+import com.atsistemas.EncuestaProj.model.User;
 import com.atsistemas.EncuestaProj.service.UserService;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping(value="/user")
 public class UserController {
 	
 	@Autowired
@@ -46,6 +43,15 @@ public class UserController {
 	}
 	
 	
+	@RequestMapping(value="/{idUser}", method= RequestMethod.GET)
+	public UserDTOPost findById(@PathVariable Integer idUser) throws UserNotFoundException {
+		if (userService.findById(idUser).isPresent())
+			return userMapper.userDaoToDto(userService.findById(idUser).get());
+		else
+			throw new UserNotFoundException("No se encuentra el usuario con id " + idUser);
+	}
+	
+	
 	@RequestMapping(method=RequestMethod.POST)
 	public UserDTOPost create(@RequestBody UserDTO user){
 		LOG.info("UserController create --Param user=" + user);
@@ -54,20 +60,24 @@ public class UserController {
 	}
 
 	@RequestMapping(value="/{idUser}", method=RequestMethod.PUT)
-	public void update(@PathVariable Integer idUser, @RequestBody UserDTOPost user) {
-		LOG.info("UserController update --Param user=" + user);
-		userService.update(userMapper.userDtoToDao(user));
+	public void update(@PathVariable Integer idUser, @RequestBody UserDTO userDTO) throws UserNotFoundException {
+		LOG.info("UserController update --Param idUser="+ idUser +" user=" + userDTO);
+		Optional<User> userSearch = userService.findById(idUser);
+		if (userSearch.isPresent()){
+			userService.update(userSearch.get(), userDTO);
+		} else {
+			throw new UserNotFoundException("No se encuentra el usuario con id " + idUser);
+		}
 	
 	}
 
 	@RequestMapping(value="/{idUser}", method=RequestMethod.DELETE)
-	public void delete (@PathVariable Integer idUser) {
+	public void delete (@PathVariable Integer idUser) throws UserNotFoundException {
 		if (userService.findById(idUser).isPresent())
 			userService.delete(userService.findById(idUser).get());
+		else
+			throw new UserNotFoundException("No se encuentra el usuario con id " + idUser);
 	}
 	
-	@ExceptionHandler(ConstraintViolationException.class)
-	public ResponseEntity<Object> controlClaves(Exception ex,WebRequest request) {
-		return new ResponseEntity<Object>("User ya creado con mismo email o user name: " + ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
-	}
+
 }

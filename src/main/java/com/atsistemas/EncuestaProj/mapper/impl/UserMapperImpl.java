@@ -1,4 +1,4 @@
-package com.atsistemas.EncuestaProj.mapper;
+package com.atsistemas.EncuestaProj.mapper.impl;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.atsistemas.EncuestaProj.dto.UserDTO;
 import com.atsistemas.EncuestaProj.dto.UserDTOPost;
+import com.atsistemas.EncuestaProj.mapper.UserMapper;
 import com.atsistemas.EncuestaProj.model.User;
 
 @Component

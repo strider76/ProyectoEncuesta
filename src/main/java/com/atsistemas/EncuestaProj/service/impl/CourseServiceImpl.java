@@ -1,99 +1,96 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.atsistemas.EncuestaProj.dao.CourseDAO;
+import com.atsistemas.EncuestaProj.dto.CourseDTO;
 import com.atsistemas.EncuestaProj.model.Course;
+import com.atsistemas.EncuestaProj.model.Cuestionario;
 import com.atsistemas.EncuestaProj.model.User;
 import com.atsistemas.EncuestaProj.service.CourseService;
 
 @Service
-public class CourseServiceImpl implements CourseService, InitializingBean {
+public class CourseServiceImpl implements CourseService {
 
 	@Autowired
 	private CourseDAO courseDAO;
 	
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		test();
+	public Course create(Course model) {
+		return courseDAO.save(model);
+	}
+
+	@Override
+	public Optional<Course> findById(Integer id) {
+		return courseDAO.findById(id);
+	}
+
+	@Override
+	public Set<Course> findAll(Pageable pagina) {
+		int numElementos = pagina.getPageSize();
+		int numPagina = pagina.getPageNumber();
+		return courseDAO.findAll(PageRequest.of(numPagina, numElementos)).stream().collect(Collectors.toSet());
+	}
+
+	@Override
+	public void update(Course model, CourseDTO dto) {
+		model.setName(dto.getName());
+		courseDAO.save(model);
 		
 	}
-	
+
 	@Override
-	public void test() {
+	public void delete(Course model) {
+		courseDAO.delete(model);
+		
+	}
+
+	@Override
+	public void addUserCourse(User user, Integer idCourse) {
+		Optional<Course> courseSearch = courseDAO.findById(idCourse);
+		if (courseSearch.isPresent()){
+			Course curCourse = courseSearch.get();
+			curCourse.getUsers().add(user);
+			courseDAO.save(curCourse);
+		}
+		
+	}
+
+	@Override
+	public void deleteUserCourse(User user, Course course) {
 		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	@Transactional
-	public Course addCourse(Course course) {
-		return courseDAO.save(course);
-	}
-
-	@Override
-	public List<Course> findAllCourses() {
-		List<Course> allCourses = new ArrayList<>();
-		Iterator<Course> iterador = courseDAO.findAll().iterator();
-		while (iterador.hasNext())
-			allCourses.add(iterador.next());
-		return allCourses;
-	}
-
-	@Override
-	public Optional<Course> findCourseById(Integer idCourse) {
-		return courseDAO.findById(idCourse);
-	}
-
-	@Override
-	public Optional<Course> findCourseByName(String name) {
-		return courseDAO.findOneByName(name);
-	}
-
-	@Override
-	public Boolean removeCourse(Integer id) {
-		Optional<Course> courseSearch = findCourseById(id);
-		if (courseSearch.isPresent()) {
-			courseDAO.delete(courseSearch.get());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	@Override
-	public Optional<Course> updateCourse(Integer idCourse, Course course) {
-		Optional<Course> courseSearch = findCourseById(idCourse);
-		if (courseSearch.isPresent()) {
-			Course courseOrigin = courseSearch.get();
-			courseOrigin.setName(course.getName());
-			courseOrigin.setCuestionarios(course.getCuestionarios());
-			courseOrigin.setUsers(course.getUsers());
-			courseOrigin = courseDAO.save(courseOrigin);
-			return Optional.of(courseOrigin);
-		} else {
-			return Optional.empty();
-		}
 		
 	}
 
 	@Override
-	public List<User> allUserCourse(Integer idCourse) {
-		List<User> usersCourse = new ArrayList<>();
-		Optional<Course> courseSearch = findCourseById(idCourse);
-		if (courseSearch.isPresent()) {
-			usersCourse = courseSearch.get().getUsers();
-		}
-		return usersCourse;
+	public Set<User> getAllUserCourse(Course course) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addCuestionarioCourse(Cuestionario cuestionario, Course course) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteCuestionarioCourse(Cuestionario cuestionario, Course course) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Set<Cuestionario> getAllCuestionarioCourse(Course course) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

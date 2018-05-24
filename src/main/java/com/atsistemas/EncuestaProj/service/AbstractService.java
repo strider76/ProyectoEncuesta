@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 
-public interface AbstractService<T,ID extends Serializable> {
+public interface AbstractService<T,D,ID extends Serializable> {
 
 	T create(T model);
 	
@@ -14,7 +14,7 @@ public interface AbstractService<T,ID extends Serializable> {
 	
 	Set<T> findAll(Pageable pagina);
 	
-	void update(T model);
+	void update(T model,D dto);
 	
 	void delete(T model);
 	
