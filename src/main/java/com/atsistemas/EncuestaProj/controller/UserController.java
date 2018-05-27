@@ -1,4 +1,4 @@
-package com.atsistemas.EncuestaProj.controller;
+ package com.atsistemas.EncuestaProj.controller;
 
 import java.util.Optional;
 import java.util.Set;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.atsistemas.EncuestaProj.dto.UserDTO;
 import com.atsistemas.EncuestaProj.dto.UserDTOPost;
+import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.UserNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.UserMapper;
 import com.atsistemas.EncuestaProj.model.User;
@@ -60,7 +61,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value="/{idUser}", method=RequestMethod.PUT)
-	public void update(@PathVariable Integer idUser, @RequestBody UserDTO userDTO) throws UserNotFoundException {
+	public void update(@PathVariable Integer idUser, @RequestBody UserDTO userDTO) throws NotFoundException {
 		LOG.info("UserController update --Param idUser="+ idUser +" user=" + userDTO);
 		Optional<User> userSearch = userService.findById(idUser);
 		if (userSearch.isPresent()){
