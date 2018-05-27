@@ -1,22 +1,16 @@
 package com.atsistemas.EncuestaProj.service;
 
-import java.util.List;
 import java.util.Optional;
 
-import com.atsistemas.EncuestaProj.model.Cuestionario;
-import com.atsistemas.EncuestaProj.model.Pregunta;
+import com.atsistemas.EncuestaProj.controller.SurveyNotFoundException;
+import com.atsistemas.EncuestaProj.dto.TagDTO;
 import com.atsistemas.EncuestaProj.model.Tag;
 
-public interface TagService {
+public interface TagService extends AbstractService<Tag, TagDTO, Integer> {
 
-	public Optional<Tag> findByIdTag(Integer idTag);
-	public Optional<Tag> findByName(String name);
-	public List<Pregunta> findPreguntaByIdTag(Integer idTag);
-	public List<Cuestionario> findCuestionarioByIdTag(Integer idTag);
-	public List<Tag> getAll();
-	public Tag addTag(Tag tag);
-	public Optional<Tag> updateTag(Integer idTag, Tag tag);
-	public Boolean removeTag(Integer idTag);
-	public void test();
+	Optional<Tag> findByName(String name);
+
+	void asignSurvey(Tag tag, Integer idSurvey) throws SurveyNotFoundException;
+	void removeSurvey(Tag tag, Integer idSurvey) throws SurveyNotFoundException;
 	
 }
