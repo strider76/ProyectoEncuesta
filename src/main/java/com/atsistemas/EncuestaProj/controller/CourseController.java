@@ -17,8 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.atsistemas.EncuestaProj.dto.CourseDTO;
 import com.atsistemas.EncuestaProj.dto.CourseDTOPost;
+import com.atsistemas.EncuestaProj.dto.UserDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
+import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.UserNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.CourseMapper;
+import com.atsistemas.EncuestaProj.mapper.UserMapper;
 import com.atsistemas.EncuestaProj.model.Course;
 import com.atsistemas.EncuestaProj.service.CourseService;
 
@@ -29,6 +33,9 @@ public class CourseController {
 
 	@Autowired
 	CourseService courseService;
+	
+	@Autowired
+	UserMapper userMapper;
 	
 	@Autowired
 	CourseMapper courseMapper;
@@ -69,7 +76,7 @@ public class CourseController {
 	
 	@RequestMapping(value="/{idCourse}", method=RequestMethod.PUT)
 	@ResponseStatus(code=HttpStatus.OK)
-	public void update(@PathVariable Integer idCourse, @RequestBody CourseDTOPost courseModified) throws CourseNotfoundException {
+	public void update(@PathVariable Integer idCourse, @RequestBody CourseDTOPost courseModified) throws NotFoundException {
 		Optional<Course> courseSearch = courseService.findById(idCourse);
 		if (courseSearch.isPresent()){
 			courseService.update(courseSearch.get(), courseModified);
@@ -78,5 +85,36 @@ public class CourseController {
 		}
 	}
 	
+	@RequestMapping(value="/{idCourse}/user/{idUser}", method=RequestMethod.POST)
+	@ResponseStatus(code=HttpStatus.ACCEPTED)
+	public void addUserToCourse(@PathVariable Integer idCourse, @PathVariable Integer idUser) throws CourseNotfoundException, UserNotFoundException {
+		Optional<Course> courseSearch = courseService.findById(idCourse);
+		if (courseSearch.isPresent()){
+			courseService.addUserCourse(idUser, courseSearch.get());
+		} else {
+			throw new CourseNotfoundException("No se encuentra el curso con id " + idCourse);
+		}
+	}
 	
+	@RequestMapping(value="/{idCourse}/user/{idUser}", method=RequestMethod.DELETE)
+	@ResponseStatus(code=HttpStatus.ACCEPTED)
+	public void deleteUserToCourse(@PathVariable Integer idCourse, @PathVariable Integer idUser) throws CourseNotfoundException, UserNotFoundException {
+		Optional<Course> courseSearch = courseService.findById(idCourse);
+		if (courseSearch.isPresent()){
+			courseService.deleteUserCourse(idUser, courseSearch.get());
+		} else {
+			throw new CourseNotfoundException("No se encuentra el curso con id " + idCourse);
+		}
+	}	
+	
+	@RequestMapping(value="/{idCourse}/user", method=RequestMethod.GET)
+	@ResponseStatus(code=HttpStatus.ACCEPTED)
+	public Set<UserDTOPost> getUsersCourse(@PathVariable Integer idCourse) throws CourseNotfoundException {
+		Optional<Course> courseSearch = courseService.findById(idCourse);
+		if (courseSearch.isPresent()){
+			return userMapper.userGetDaoToDto(courseService.getAllUserCourse(courseSearch.get()));
+		} else {
+			throw new CourseNotfoundException("No se encuentra el curso con id " + idCourse);
+		}		
+	}
 }

@@ -34,7 +34,7 @@ public class Course {
 	private Set<User> users;
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy = "course")
-	private Set<Cuestionario> cuestionarios;
+	private Set<Survey> cuestionarios;
 
 	@Override
 	public String toString() {

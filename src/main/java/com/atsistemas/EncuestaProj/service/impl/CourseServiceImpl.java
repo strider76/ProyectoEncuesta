@@ -1,5 +1,6 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,16 +12,20 @@ import org.springframework.stereotype.Service;
 
 import com.atsistemas.EncuestaProj.dao.CourseDAO;
 import com.atsistemas.EncuestaProj.dto.CourseDTO;
+import com.atsistemas.EncuestaProj.excepciones.UserNotFoundException;
 import com.atsistemas.EncuestaProj.model.Course;
-import com.atsistemas.EncuestaProj.model.Cuestionario;
 import com.atsistemas.EncuestaProj.model.User;
 import com.atsistemas.EncuestaProj.service.CourseService;
+import com.atsistemas.EncuestaProj.service.UserService;
 
 @Service
 public class CourseServiceImpl implements CourseService {
 
 	@Autowired
 	private CourseDAO courseDAO;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Override
 	public Course create(Course model) {
@@ -53,45 +58,38 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public void addUserCourse(User user, Integer idCourse) {
-		Optional<Course> courseSearch = courseDAO.findById(idCourse);
-		if (courseSearch.isPresent()){
-			Course curCourse = courseSearch.get();
-			curCourse.getUsers().add(user);
-			courseDAO.save(curCourse);
+	public void addUserCourse(Integer user, Course course) throws UserNotFoundException {
+		Optional<User> userSearch = userService.findById(user);
+		if (userSearch.isPresent()){
+			course.getUsers().add(userSearch.get());
+			courseDAO.save(course);
+		} else {
+			throw new UserNotFoundException("Usuario no enconrtado con id('"+ user +"')");
 		}
 		
 	}
 
 	@Override
-	public void deleteUserCourse(User user, Course course) {
-		// TODO Auto-generated method stub
+	public void deleteUserCourse(Integer idUser, Course course) throws UserNotFoundException {
+		Optional<User> userSearch = userService.findById(idUser);
+		if (userSearch.isPresent()){
+			course.getUsers().remove(userSearch.get());
+			courseDAO.save(course);
+		} else {
+			throw  new UserNotFoundException("Usuario no enconrtado con id('"+ idUser +"')");
+		}
 		
 	}
 
 	@Override
 	public Set<User> getAllUserCourse(Course course) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<User> usersCourse = new HashSet<>();
+		for (User user : course.getUsers()) 
+			usersCourse.add(user);
+		return usersCourse;
 	}
 
-	@Override
-	public void addCuestionarioCourse(Cuestionario cuestionario, Course course) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void deleteCuestionarioCourse(Cuestionario cuestionario, Course course) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Set<Cuestionario> getAllCuestionarioCourse(Course course) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 
