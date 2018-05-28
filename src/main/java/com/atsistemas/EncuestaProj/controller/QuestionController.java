@@ -65,6 +65,14 @@ public class QuestionController {
 		
 	}
 	
+	@GetMapping("/survey/{idSurvey}")
+	@ResponseStatus(code=HttpStatus.OK)
+	public Set<QuestionDTOPost> findAllBySurvey(@PathVariable Integer idSurvey,
+												@RequestParam(defaultValue="0",required=false, name="page") Integer pageNumber,
+												@RequestParam(defaultValue="10",required=false, name="size") Integer pageSize) throws SurveyNotFoundException {
+		return questionService.findAllBySurvey(idSurvey,PageRequest.of(pageNumber, pageSize));
+	}
+	
 	@GetMapping("/dificulty/{idDificulty}")
 	@ResponseStatus(code=HttpStatus.OK)
 	public Set<QuestionDTOPost> findAllByDificulty(@PathVariable Integer idDificulty,

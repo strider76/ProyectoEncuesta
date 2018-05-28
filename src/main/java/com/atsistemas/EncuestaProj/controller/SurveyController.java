@@ -70,9 +70,9 @@ public class SurveyController {
 		return surveyMapper.surveyGetDaoToDto(surveyService.findAll(PageRequest.of(pageNumber, pageSize)));
 	}
 	
-	@PostMapping("/course/{idCourse}")
+	@PostMapping("/course/")
 	@ResponseStatus(code=HttpStatus.CREATED)
-	public SurveyDTOPost create (@PathVariable Integer idCourse,@RequestBody SurveyDTO suerveyDTO) throws NotFoundException {
+	public SurveyDTOPost create (@RequestBody SurveyDTO suerveyDTO) throws NotFoundException {
 		return surveyMapper.surveyDaoToDto(surveyService.create(surveyMapper.surveyDtoToDao(suerveyDTO)));
 	}
 	
@@ -100,7 +100,7 @@ public class SurveyController {
 	@ResponseStatus(code=HttpStatus.CREATED)
 	public void generateRamdomQuestionToSurvey(@PathVariable Integer idSurvey) throws SurveyNotFoundException {
 		Optional<Survey> surveySearch = surveyService.findById(idSurvey);
-		if (surveySearch.isPresent() && surveySearch.get().getEsAleatorio() && !surveySearch.get().getEsCerrado())
+		if (surveySearch.isPresent() && surveySearch.get().getEsAleatorio() )
 			surveyService.generateRamdomQuestions(surveySearch.get());
 		else
 			throw new SurveyNotFoundException("Survey no encontrada  idSurvey('"+ idSurvey +"') o no es aleatorio o esta cerrada");

@@ -103,7 +103,7 @@ public class SurveyServiceImpl implements SurveyService {
 	@Override
 	public void generateRamdomQuestions(Survey survey) {
 			
-		List<Question> questions = new ArrayList<Question>(questionService.findAllbyTags(survey.getTags()));
+		List<Question> questions = new ArrayList<Question>(questionService.findAllbyTags(survey.getTags()).stream().collect(Collectors.toSet()));
 		while (questions.size()>0 && survey.getPreguntas().size()<survey.getMaxPreguntas())
 			survey.getPreguntas().add(questions.remove(ThreadLocalRandom.current().nextInt(0, questions.size()-1)));
 		if (survey.getPreguntas().size()==survey.getMaxPreguntas()) {survey.setEsCerrado(true);}

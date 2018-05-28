@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.atsistemas.EncuestaProj.model.Dificulty;
 import com.atsistemas.EncuestaProj.model.Question;
+import com.atsistemas.EncuestaProj.model.Survey;
 import com.atsistemas.EncuestaProj.model.Tag;
 
 @Repository
@@ -17,4 +18,5 @@ public interface QuestionDAO extends PagingAndSortingRepository<Question, Intege
 	Page<Question> findAllByTag(Pageable arg0,Tag tag);
 	Page<Question> findAllByDificulty(Pageable arg0,Dificulty tag);
 	Set<Question>  findAllByTag(Set<Tag> tags);
+	Page<Question> findAllByCuestionarios(Pageable arg, Survey survey);
 }

@@ -3,6 +3,7 @@ package com.atsistemas.EncuestaProj.service;
 import java.util.Set;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.atsistemas.EncuestaProj.dto.QuestionDTO;
@@ -20,6 +21,7 @@ public interface QuestionService extends AbstractService<Question, QuestionDTO, 
 	void assignSurvey(Question question, Integer idSurvey) throws SurveyNotFoundException;
 	void removeSurvey(Question question, Integer idSurvey) throws SurveyNotFoundException;
 	Set<Question> findAllbyTags(Set<Tag> tags);
+	Set<QuestionDTOPost> findAllBySurvey(Integer idSurvey, PageRequest of) throws SurveyNotFoundException;
 	
 	
 }

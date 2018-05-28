@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -195,6 +196,18 @@ public class QuestionServiceImpl implements QuestionService {
 		}
 		
 
+		
+	}
+
+	@Override
+	public Set<QuestionDTOPost> findAllBySurvey(Integer idSurvey, PageRequest of) throws SurveyNotFoundException {
+		Optional<Survey> surveySearch = surveyService.findById(idSurvey);
+		if (surveySearch.isPresent()){
+			Survey survey = surveySearch.get();
+			return questionMapper.QuestionGetDaoToDto(questionDAO.findAllByCuestionarios(of, survey).stream().collect(Collectors.toSet()));
+		} else {
+			throw new SurveyNotFoundException("Survey no encontrada con idSurvey('"+ idSurvey +"')");
+		}
 		
 	}
 
