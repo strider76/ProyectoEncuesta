@@ -54,7 +54,7 @@ public class UserController {
 	
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public UserDTOPost create(@RequestBody UserDTO user){
+	public UserDTOPost create(@RequestBody UserDTO user) throws NotFoundException{
 		LOG.info("UserController create --Param user=" + user);
 		return userMapper.userDaoToDto(userService.create(userMapper.userDtoToDao(user)));
 		
