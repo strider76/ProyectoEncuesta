@@ -68,7 +68,7 @@ public class TagController {
 	
 	@PostMapping
 	@ResponseStatus(code=HttpStatus.CREATED)
-	public TagDTOPost create(@RequestBody TagDTO tagDTO) {
+	public TagDTOPost create(@RequestBody TagDTO tagDTO) throws NotFoundException {
 		return tagMapper.tagDaoToDto(tagService.create(tagMapper.tagDtoToDao(tagDTO)));
 	}
 	

@@ -81,6 +81,28 @@ public class TagServiceImpl implements TagService {
 			throw new SurveyNotFoundException("Survey No Encontrado idSurvey('"+ idSurvey +"')");
 		
 	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		initTags();
+		
+	}
+
+	private void initTags() {
+		
+		Tag tag1 = new Tag();
+		Tag tag2 = new Tag();
+		Tag tag3 = new Tag();
+		
+		tag1.setName("jpa");
+		tag2.setName("spring");
+		tag3.setName("hibernate");
+		
+		tagDAO.save(tag1);
+		tagDAO.save(tag2);
+		tagDAO.save(tag3);
+		
+	}
 	
 	
 
