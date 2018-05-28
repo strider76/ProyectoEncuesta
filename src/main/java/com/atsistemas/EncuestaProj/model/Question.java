@@ -1,12 +1,13 @@
 package com.atsistemas.EncuestaProj.model;
 
-import java.util.List;
+import java.util.Set;
 
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -21,34 +22,34 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Pregunta {
+public class Question {
 
 	
 	@Id
-	@GeneratedValue
-	private Integer idPregunta;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Integer idQuestion;
 	
 	@Column(nullable=false)
-	private String pregunta;
+	private String name;
 	
 	@ManyToMany(fetch=FetchType.LAZY, mappedBy="preguntas")
-	private List<Cuestionario> cuestionarios;
+	private Set<Survey> cuestionarios;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_tag")
 	private Tag tag;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id_dificultad")
-	private Dificultad dificultad;
+	@JoinColumn(name="id_dificulty")
+	private Dificulty dificulty;
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy = "pregunta")
+	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL, mappedBy = "question")
 	@Size(min=0,max=4)
-	private List<Respuesta> respuestas;
+	private Set<Answer> answers;
 
 	@Override
 	public String toString() {
-		return "Pregunta [idPregunta=" + idPregunta + ", pregunta=" + pregunta + "]";
+		return "Pregunta [idQuestion=" + idQuestion + ", name=" + name + "]";
 	}
 	
 	
