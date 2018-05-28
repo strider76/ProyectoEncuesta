@@ -65,7 +65,7 @@ public class DificultyController {
 	
 	@PostMapping
 	@ResponseStatus(code=HttpStatus.CREATED)
-	public DificultyDTOPost create(@RequestBody DificultyDTO dificulty) {
+	public DificultyDTOPost create(@RequestBody DificultyDTO dificulty) throws NotFoundException {
 		
 		return dificultyMapper.dificultyDaoToDto(dificultyService.create(dificultyMapper.dificultyDtoToDao(dificulty)));
 		
