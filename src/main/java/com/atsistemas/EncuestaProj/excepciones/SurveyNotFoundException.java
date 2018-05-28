@@ -1,6 +1,4 @@
-package com.atsistemas.EncuestaProj.controller;
-
-import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
+package com.atsistemas.EncuestaProj.excepciones;
 
 public class SurveyNotFoundException extends NotFoundException {
 

@@ -23,6 +23,7 @@ import com.atsistemas.EncuestaProj.dto.QuestionDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.QuestionNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.QuestionMapper;
 import com.atsistemas.EncuestaProj.model.Question;

@@ -1,5 +1,6 @@
 package com.atsistemas.EncuestaProj.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -45,7 +46,7 @@ public class Question {
 	
 	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL, mappedBy = "question")
 	@Size(min=0,max=4)
-	private Set<Answer> answers;
+	private Set<Answer> answers = new HashSet<>();
 
 	@Override
 	public String toString() {

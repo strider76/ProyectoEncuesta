@@ -12,6 +12,7 @@ import com.atsistemas.EncuestaProj.excepciones.AnswerNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
 import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.QuestionNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.UserNotFoundException;
 

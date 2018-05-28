@@ -9,9 +9,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.atsistemas.EncuestaProj.controller.SurveyNotFoundException;
 import com.atsistemas.EncuestaProj.dao.TagDAO;
 import com.atsistemas.EncuestaProj.dto.TagDTO;
+import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
 import com.atsistemas.EncuestaProj.model.Survey;
 import com.atsistemas.EncuestaProj.model.Tag;
 import com.atsistemas.EncuestaProj.service.SurveyService;

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.atsistemas.EncuestaProj.dto.TagDTO;
 import com.atsistemas.EncuestaProj.dto.TagDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.TagMapper;
 import com.atsistemas.EncuestaProj.model.Tag;

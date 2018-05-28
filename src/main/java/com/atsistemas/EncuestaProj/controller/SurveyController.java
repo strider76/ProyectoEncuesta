@@ -21,6 +21,7 @@ import com.atsistemas.EncuestaProj.dto.SurveyDTO;
 import com.atsistemas.EncuestaProj.dto.SurveyDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.SurveyMapper;
 import com.atsistemas.EncuestaProj.model.Survey;
