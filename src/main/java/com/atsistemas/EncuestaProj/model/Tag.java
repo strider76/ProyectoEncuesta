@@ -12,10 +12,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class Tag {
 
@@ -23,7 +25,7 @@ public class Tag {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id_tag")
 	private Integer idTag;
-	
+
 	@Column(name="name",nullable=false, unique=true)
 	private String name;
 	
@@ -34,6 +36,11 @@ public class Tag {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="tag")
 	private Set<Question> preguntas;
 
+	
+	public Tag(String name) {
+		this.name=name;
+	}
+	
 	@Override
 	public String toString() {
 		return "Tag [idTag=" + idTag + ", nombre=" + name + "]";

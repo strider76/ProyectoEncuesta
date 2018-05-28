@@ -33,7 +33,8 @@ public class AnswerServiceImpl implements AnswerService {
 	
 	@Override
 	public Answer create(Answer model) throws NotFoundException {
-		if (model.getQuestion().getAnswers().size()<4) {
+		int size = questionService.findById(model.getQuestion().getIdQuestion()).get().getAnswers().size();
+		if (size<4) {
 			if (model.getEsCorrecta()) { answerToFalse(model.getQuestion()); }
 			return answerDAO.save(model);
 		} else {

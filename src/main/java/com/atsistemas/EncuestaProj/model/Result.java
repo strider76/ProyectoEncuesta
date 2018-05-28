@@ -3,6 +3,7 @@ package com.atsistemas.EncuestaProj.model;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,7 +18,7 @@ import lombok.Setter;
 public class Result {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer idResult;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -26,7 +27,7 @@ public class Result {
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_cuestionario")
-	private Cuestionario cuestionario;
+	private Survey cuestionario;
 	
 	@Size(min=0,max=10)
 	private Integer puntuacion;

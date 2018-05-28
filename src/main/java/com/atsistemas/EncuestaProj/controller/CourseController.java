@@ -69,7 +69,7 @@ public class CourseController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<CourseDTOPost> create(@RequestBody CourseDTO courseDTO ) {
+	public ResponseEntity<CourseDTOPost> create(@RequestBody CourseDTO courseDTO ) throws NotFoundException {
 		CourseDTOPost courseAdded = courseMapper.courseDaoToDto(courseService.create(courseMapper.courseDtoToDao(courseDTO)));
 		return new ResponseEntity<CourseDTOPost>(courseAdded, HttpStatus.CREATED);
 	}
