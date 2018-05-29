@@ -1,18 +1,18 @@
 package com.atsistemas.EncuestaProj.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.InitializingBean;
 
 import com.atsistemas.EncuestaProj.dto.TagDTO;
+import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
 import com.atsistemas.EncuestaProj.model.Tag;
 
 public interface TagService extends AbstractService<Tag, TagDTO, Integer>, InitializingBean {
 
-	Optional<Tag> findByName(String name);
+	Tag findByName(String name) throws TagNotFoundException;
 
-	void asignSurvey(Tag tag, Integer idSurvey) throws SurveyNotFoundException;
-	void removeSurvey(Tag tag, Integer idSurvey) throws SurveyNotFoundException;
+	void asignSurvey(Integer idTag, Integer idSurvey) throws SurveyNotFoundException, NotFoundException;
+	void removeSurvey(Integer idTag, Integer idSurvey) throws SurveyNotFoundException, NotFoundException;
 	
 }

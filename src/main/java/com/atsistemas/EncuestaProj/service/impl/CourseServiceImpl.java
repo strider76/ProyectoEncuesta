@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.atsistemas.EncuestaProj.dao.CourseDAO;
 import com.atsistemas.EncuestaProj.dto.CourseDTO;
-import com.atsistemas.EncuestaProj.excepciones.UserNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
+import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.model.Course;
 import com.atsistemas.EncuestaProj.model.User;
 import com.atsistemas.EncuestaProj.service.CourseService;
@@ -33,8 +34,12 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public Optional<Course> findById(Integer id) {
-		return courseDAO.findById(id);
+	public Course findById(Integer id) throws NotFoundException {
+		Optional<Course> courseSearch = courseDAO.findById(id);
+		if (courseSearch.isPresent())
+			return courseSearch.get();
+		else
+			throw new CourseNotfoundException("Course no encontrado idCourse('"+ id +"')");
 	}
 
 	@Override
@@ -45,48 +50,65 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public void update(Course model, CourseDTO dto) {
-		model.setName(dto.getName());
-		courseDAO.save(model);
+	public void update(Integer idCourse, CourseDTO dto) throws NotFoundException {
+		Optional<Course> courseSearch = courseDAO.findById(idCourse);
+		if (courseSearch.isPresent()) {
+			Course course = courseSearch.get();
+			course.setName(dto.getName());
+			courseDAO.save(course);
+		} else
+			throw new CourseNotfoundException("Course no encontrado idCourse('"+ idCourse +"')");
 		
 	}
 
 	@Override
-	public void delete(Course model) {
-		courseDAO.delete(model);
-		
+	public void delete(Integer idCourse) throws NotFoundException {
+		Optional<Course> courseSearch = courseDAO.findById(idCourse);
+		if (courseSearch.isPresent())
+			courseDAO.delete(courseSearch.get());
+		else
+			throw new CourseNotfoundException("Course no encontrado idCourse('"+ idCourse +"')");
 	}
 
 	@Override
-	public void addUserCourse(Integer user, Course course) throws UserNotFoundException {
-		Optional<User> userSearch = userService.findById(user);
-		if (userSearch.isPresent()){
-			course.getUsers().add(userSearch.get());
+	public void addUserCourse(Integer idUser, Integer idCourse) throws NotFoundException {
+		User userSearch = userService.findById(idUser);
+		Optional<Course> courseSearch = courseDAO.findById(idCourse);
+		if (courseSearch.isPresent()){
+			Course course = courseSearch.get();
+			course.getUsers().add(userSearch);
 			courseDAO.save(course);
 		} else {
-			throw new UserNotFoundException("Usuario no enconrtado con id('"+ user +"')");
+			throw new CourseNotfoundException("Course no enconrtado con id('"+ idCourse +"')");
 		}
 		
 	}
 
 	@Override
-	public void deleteUserCourse(Integer idUser, Course course) throws UserNotFoundException {
-		Optional<User> userSearch = userService.findById(idUser);
-		if (userSearch.isPresent()){
-			course.getUsers().remove(userSearch.get());
+	public void deleteUserCourse(Integer idUser, Integer idCourse) throws NotFoundException {
+		User userSearch = userService.findById(idUser);
+		Optional<Course> courseSearch = courseDAO.findById(idCourse);
+		if (courseSearch.isPresent()){
+			Course course = courseSearch.get();
+			course.getUsers().remove(userSearch);
 			courseDAO.save(course);
 		} else {
-			throw  new UserNotFoundException("Usuario no enconrtado con id('"+ idUser +"')");
+			throw new CourseNotfoundException("Course no enconrtado con id('"+ idCourse +"')");
 		}
 		
 	}
 
 	@Override
-	public Set<User> getAllUserCourse(Course course) {
-		Set<User> usersCourse = new HashSet<>();
-		for (User user : course.getUsers()) 
-			usersCourse.add(user);
-		return usersCourse;
+	public Set<User> getAllUserCourse(Integer idCourse) throws NotFoundException {
+		Optional<Course> courseSearch = courseDAO.findById(idCourse);
+		if (courseSearch.isPresent()) {
+			Set<User> usersCourse = new HashSet<>();
+			for (User user : courseSearch.get().getUsers()) 
+				usersCourse.add(user);
+			return usersCourse;
+		} else {
+			throw new CourseNotfoundException("Course no enconrtado con id('"+ idCourse +"')");
+		}
 	}
 
 

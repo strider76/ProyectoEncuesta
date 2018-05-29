@@ -1,6 +1,5 @@
 package com.atsistemas.EncuestaProj.controller;
 
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.atsistemas.EncuestaProj.dto.TagDTO;
 import com.atsistemas.EncuestaProj.dto.TagDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
-import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.TagMapper;
-import com.atsistemas.EncuestaProj.model.Tag;
 import com.atsistemas.EncuestaProj.service.TagService;
 
 @RestController
@@ -40,30 +37,20 @@ public class TagController {
 	@ResponseStatus(code=HttpStatus.OK)
 	public Set<TagDTOPost> findAll(@RequestParam(defaultValue="0", required=false) Integer page,
 									@RequestParam(defaultValue="10", required=false) Integer size) {
-		
 		return tagMapper.tagsGetDaoToDto(tagService.findAll(PageRequest.of(page, size)));
-		
 	}
 	
 	
 	@GetMapping("/{idTag}")
 	@ResponseStatus(code=HttpStatus.OK)
-	public TagDTOPost findById(@PathVariable Integer idTag) throws TagNotFoundException {
-		Optional<Tag> tagSearch = tagService.findById(idTag);
-		if (tagSearch.isPresent())
-			return tagMapper.tagDaoToDto(tagSearch.get());
-		else
-			throw new TagNotFoundException("Tag no encontrado con id('"+ idTag +"')");
+	public TagDTOPost findById(@PathVariable Integer idTag) throws NotFoundException {
+		return tagMapper.tagDaoToDto(tagService.findById(idTag));
 	}
 	
 	@GetMapping("/search")
 	@ResponseStatus(code=HttpStatus.OK)
 	public TagDTOPost findByName(@RequestParam(defaultValue="",required=false) String name) throws TagNotFoundException{
-		Optional<Tag> tagSearch = tagService.findByName(name);				
-		if (tagSearch.isPresent())
-			return tagMapper.tagDaoToDto(tagSearch.get());
-		else
-			throw new TagNotFoundException("Tag no encontrado con name('"+ name +"')");
+		return tagMapper.tagDaoToDto(tagService.findByName(name));
 	}
 	
 	
@@ -76,43 +63,27 @@ public class TagController {
 	
 	@DeleteMapping("/{idTag}")
 	@ResponseStatus(code=HttpStatus.OK)
-	public void delete(@PathVariable Integer idTag) throws TagNotFoundException {
-		Optional<Tag> tagSearch = tagService.findById(idTag);
-		if (tagSearch.isPresent())
-			tagService.delete(tagSearch.get());
-		else
-			throw new TagNotFoundException("Tag no encontrado con id('"+ idTag +"')");
+	public void delete(@PathVariable Integer idTag) throws NotFoundException {
+		tagService.delete(idTag);
 	}
 	
 	@PutMapping("/{idTag}")
 	@ResponseStatus(code=HttpStatus.OK)
 	public void update(@PathVariable Integer idTag, @RequestBody TagDTO tagDTO) throws NotFoundException {
-		Optional<Tag> tagSearch = tagService.findById(idTag);
-		if (tagSearch.isPresent())
-			tagService.update(tagSearch.get(), tagDTO);
-		else
-			throw new TagNotFoundException("Tag no encontrado con id('"+ idTag +"')");
+		tagService.update(idTag, tagDTO);
 	}
 	
 
 	@PostMapping("/{idTag}/survey/{idSurvey}")
 	@ResponseStatus(code=HttpStatus.CREATED)
-	public void AssingTagToSurvey(@PathVariable Integer idTag, @PathVariable Integer idSurvey) throws TagNotFoundException, SurveyNotFoundException {
-		Optional<Tag> tagSearch = tagService.findById(idTag);
-		if (tagSearch.isPresent())
-			tagService.asignSurvey(tagSearch.get(), idSurvey);
-		else
-			throw new TagNotFoundException("Tag no encontrado con id('"+ idTag +"')");
+	public void AssingTagToSurvey(@PathVariable Integer idTag, @PathVariable Integer idSurvey) throws NotFoundException {
+		tagService.asignSurvey(idTag, idSurvey);
 	}
 	
 	@DeleteMapping("/{idTag}/survey/{idSurvey}")
 	@ResponseStatus(code=HttpStatus.CREATED)
-	public void removeTagToSurvey(@PathVariable Integer idTag, @PathVariable Integer idSurvey) throws TagNotFoundException, SurveyNotFoundException {
-		Optional<Tag> tagSearch = tagService.findById(idTag);
-		if (tagSearch.isPresent())
-			tagService.removeSurvey(tagSearch.get(), idSurvey);
-		else
-			throw new TagNotFoundException("Tag no encontrado con id('"+ idTag +"')");
+	public void removeTagToSurvey(@PathVariable Integer idTag, @PathVariable Integer idSurvey) throws NotFoundException {
+		tagService.removeSurvey(idTag, idSurvey);
 	}	
 
 }

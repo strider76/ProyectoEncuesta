@@ -12,7 +12,6 @@ import com.atsistemas.EncuestaProj.dao.AnswerDAO;
 import com.atsistemas.EncuestaProj.dto.AnswerDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.AnswerNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
-import com.atsistemas.EncuestaProj.excepciones.QuestionNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.AnswerMapper;
 import com.atsistemas.EncuestaProj.model.Answer;
 import com.atsistemas.EncuestaProj.model.Question;
@@ -42,8 +41,12 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 
 	@Override
-	public Optional<Answer> findById(Integer id) {
-		return answerDAO.findById(id);
+	public Answer findById(Integer id) throws NotFoundException {
+		Optional<Answer> answerSearch = answerDAO.findById(id);
+		if (answerSearch.isPresent())
+			return answerSearch.get();
+		else
+			throw new AnswerNotFoundException("Answer no encontrada idAnswer('"+ id +"')");
 	}
 
 	@Override
@@ -52,17 +55,27 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 
 	@Override
-	public void update(Answer model, AnswerDTOPost answerDto) {
-		if (model.getEsCorrecta()) { answerToFalse(model.getQuestion()); }
-		model.setRespuesta(answerDto.getRespuesta());
-		model.setEsCorrecta(answerDto.getEsCorrecta());
-		answerDAO.save(model);
+	public void update(Integer idAnswer, AnswerDTOPost answerDto) throws NotFoundException {
+		Optional<Answer> answerSearch = answerDAO.findById(idAnswer);
+		if (answerSearch.isPresent()) {
+			Answer answer = answerSearch.get();
+			answer.setEsCorrecta(answerDto.getEsCorrecta());
+			answer.setRespuesta(answerDto.getRespuesta());
+			if (answer.getEsCorrecta()) { answerToFalse(answer.getQuestion()); }
+			answerDAO.save(answer);
+		} else {
+			throw new AnswerNotFoundException("Answer no encontrada idAnswer('"+ idAnswer +"')");
+		}
 
 	}
 
 	@Override
-	public void delete(Answer model) {
-		answerDAO.delete(model);
+	public void delete(Integer idAnswer) throws NotFoundException {
+		Optional<Answer> answerSearch = answerDAO.findById(idAnswer);
+		if (answerSearch.isPresent())
+			answerDAO.delete(answerSearch.get());
+		else
+			throw new AnswerNotFoundException("Answer no encontrada idAnswer('"+ idAnswer +"')");
 	}
 
 	@Override
@@ -71,13 +84,9 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 
 	@Override
-	public Set<AnswerDTOPost> findAllByQuestion(Integer idQuestion) throws QuestionNotFoundException {
-		Optional<Question> questionSearch = questionService.findById(idQuestion);
-		if (questionSearch.isPresent())
-			return answerMapper.AnswerGetsDaoToDto(answerDAO.findAllByQuestion(questionSearch.get()));
-		else
-			throw new QuestionNotFoundException("Question no encontrada idQuestion('"+ idQuestion +"')");
-				
+	public Set<Answer> findAllByQuestion(Integer idQuestion) throws NotFoundException {
+		return answerDAO.findAllByQuestion(questionService.findById(idQuestion));
+			
 	}
 	
 	private void answerToFalse (Question question) {

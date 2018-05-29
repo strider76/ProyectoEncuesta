@@ -1,6 +1,5 @@
 package com.atsistemas.EncuestaProj.controller;
 
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import com.atsistemas.EncuestaProj.dto.DificultyDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.mapper.DificultyMapper;
-import com.atsistemas.EncuestaProj.model.Dificulty;
 import com.atsistemas.EncuestaProj.service.DificultyService;
 
 @RestController
@@ -44,23 +42,15 @@ public class DificultyController {
 	
 	@GetMapping("/{idDificultad}")
 	@ResponseStatus(code=HttpStatus.OK)
-	public DificultyDTOPost findById(@PathVariable Integer idDificultad) throws DificultyNotFoundException {
-		Optional<Dificulty> dificultySearch = dificultyService.findById(idDificultad);
-		if (dificultySearch.isPresent())
-			return dificultyMapper.dificultyDaoToDto(dificultySearch.get());
-		else
-			throw new DificultyNotFoundException("Dificultad no encontrada idDificultad('"+idDificultad+"')");
+	public DificultyDTOPost findById(@PathVariable Integer idDificultad) throws NotFoundException {
+		return dificultyMapper.dificultyDaoToDto(dificultyService.findById(idDificultad));
 	}
 	
 	
 	@GetMapping("/name")
 	@ResponseStatus(code=HttpStatus.OK)
 	public DificultyDTOPost findByName(@RequestParam(defaultValue="",required=true) String name) throws DificultyNotFoundException {
-		Optional<Dificulty> dificulty = dificultyService.findByName(name);
-		if (dificulty.isPresent())
-			return dificultyMapper.dificultyDaoToDto(dificulty.get());
-		else
-			throw new DificultyNotFoundException("Dificultad no encontrada name('"+ name +"')");
+		return dificultyMapper.dificultyDaoToDto(dificultyService.findByName(name));
 	}
 	
 	@PostMapping
@@ -73,23 +63,15 @@ public class DificultyController {
 	
 	@DeleteMapping("/{idDificulty}")
 	@ResponseStatus(code=HttpStatus.ACCEPTED)
-	public void delete(@PathVariable Integer idDificulty) throws DificultyNotFoundException {
-		Optional<Dificulty> dificulty = dificultyService.findById(idDificulty);
-		if (dificulty.isPresent())
-			dificultyService.delete(dificulty.get());
-		else
-			throw new DificultyNotFoundException("Dificultad no encontrada idDificultad('"+ idDificulty +"')");
+	public void delete(@PathVariable Integer idDificulty) throws NotFoundException {
+		dificultyService.delete(idDificulty);
 	}
 
 	
 	@PutMapping("/{idDificulty}")
 	@ResponseStatus(code=HttpStatus.ACCEPTED)
 	public void update(@PathVariable Integer idDificulty, @RequestBody DificultyDTO dificultyDTO) throws NotFoundException {
-		Optional<Dificulty> dificultySearch = dificultyService.findById(idDificulty);
-		if (dificultySearch.isPresent())
-			dificultyService.update(dificultySearch.get(), dificultyDTO);
-		else
-			throw new DificultyNotFoundException("Dificultad no encontrada idDificultad('"+ idDificulty +"')");
+		dificultyService.update(idDificulty, dificultyDTO);
 	}
 	
 	

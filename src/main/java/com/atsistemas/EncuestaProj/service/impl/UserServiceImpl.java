@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.atsistemas.EncuestaProj.dao.UserDAO;
 import com.atsistemas.EncuestaProj.dto.UserDTO;
+import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.UserNotFoundException;
 import com.atsistemas.EncuestaProj.model.User;
 import com.atsistemas.EncuestaProj.service.UserService;
 
@@ -32,10 +34,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Optional<User> findById(Integer id) {
-		Optional<User> user = userDAO.findById(id);
-		LOG.info("UserServiceImpl - findById(" + id +"): "+ (user.isPresent()?"Encontrado " + user.get():"No Encontrado"));
-		return user;
+	public User findById(Integer id) throws NotFoundException {
+		Optional<User> userSearch = userDAO.findById(id);
+		LOG.info("UserServiceImpl - findById(" + id +"): "+ (userSearch.isPresent()?"Encontrado " + userSearch.get():"No Encontrado"));
+		if (userSearch.isPresent())
+			return userSearch.get();
+		else
+			throw new UserNotFoundException("User no encontrado idUser('"+ id +"')");
 	}
 
 	@Override
@@ -48,20 +53,27 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void update(User model,UserDTO dto) {
-		LOG.info("UserServiceImpl - update --PARAMS model=" + model);
-		model.setUserName(dto.getUserName());
-		model.setPassword(dto.getPassword());
-		model.setEmail(dto.getEmail());
-		userDAO.save(model);
-		LOG.info("UserServiceImpl - update --realizado model=" + model );
+	public void update(Integer idUser,UserDTO dto) throws UserNotFoundException {
+		LOG.info("UserServiceImpl - update --PARAMS idUser="+ idUser +" dto=" + dto);
+		Optional<User> userSearch = userDAO.findById(idUser);
+		if (userSearch.isPresent()) {
+			User user = userSearch.get();
+			user.setUserName(dto.getUserName());
+			user.setPassword(dto.getPassword());
+			user.setEmail(dto.getEmail());
+			userDAO.save(user);
+			LOG.info("UserServiceImpl - update --realizado model=" + user );
+		} else
+			throw new UserNotFoundException("User no encontrado idUser('"+ idUser +"')");
 	}
 
 	@Override
-	public void delete(User model) {
-		userDAO.delete(model);
-		LOG.info("UserServiceImpl - delete(" + model +"): ");
-
+	public void delete(Integer idUser) throws NotFoundException {
+		Optional<User> userSearch = userDAO.findById(idUser);
+		if (userSearch.isPresent()) 
+			userDAO.delete(userSearch.get());
+		else
+			throw new UserNotFoundException("User no encontrado idUser('"+ idUser +"')");
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package com.atsistemas.EncuestaProj.mapper.impl;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import org.dozer.DozerBeanMapper;
@@ -10,10 +9,9 @@ import org.springframework.stereotype.Component;
 
 import com.atsistemas.EncuestaProj.dto.AnswerDTOPost;
 import com.atsistemas.EncuestaProj.dto.AnswerDTO;
-import com.atsistemas.EncuestaProj.excepciones.QuestionNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.mapper.AnswerMapper;
 import com.atsistemas.EncuestaProj.model.Answer;
-import com.atsistemas.EncuestaProj.model.Question;
 import com.atsistemas.EncuestaProj.service.QuestionService;
 
 @Component
@@ -33,13 +31,9 @@ public class AnswerMapperImpl implements AnswerMapper {
 	}
 
 	@Override
-	public Answer answerDtoToDao(AnswerDTO answer) throws QuestionNotFoundException {
+	public Answer answerDtoToDao(AnswerDTO answer) throws NotFoundException {
 		Answer answerRes = answerMapper.map(answer, Answer.class);
-		Optional<Question> questionSearch = questionService.findById(answer.getIdPregunta());  
-		if (questionSearch.isPresent())
-			answerRes.setQuestion(questionSearch.get());
-		else
-			throw new QuestionNotFoundException("Question no encontrada idQuestion('"+ answer.getIdPregunta() +"')");
+		answerRes.setQuestion(questionService.findById(answer.getIdPregunta()));  
 		return answerRes;
 	}
 

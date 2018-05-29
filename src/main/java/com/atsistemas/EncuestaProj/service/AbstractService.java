@@ -1,23 +1,22 @@
 package com.atsistemas.EncuestaProj.service;
 
 import java.io.Serializable;
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 
-public interface AbstractService<T,D,ID extends Serializable> {
+public interface AbstractService<D,T,ID extends Serializable> {
 
-	T create(T model) throws NotFoundException;
+	D create(D model) throws NotFoundException;
 	
-	Optional<T> findById(ID id);
+	D findById(ID id) throws NotFoundException;
 	
-	Set<T> findAll(Pageable pagina);
+	Set<D> findAll(Pageable pagina);
 	
-	void update(T model,D dto) throws NotFoundException;
+	void update(ID id,T dto) throws NotFoundException;
 	
-	void delete(T model);
+	void delete(ID id) throws NotFoundException;
 	
 }

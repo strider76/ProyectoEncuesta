@@ -1,7 +1,6 @@
 package com.atsistemas.EncuestaProj.mapper.impl;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import org.dozer.DozerBeanMapper;
@@ -10,8 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.atsistemas.EncuestaProj.dto.QuestionDTO;
 import com.atsistemas.EncuestaProj.dto.QuestionDTOPost;
-import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
-import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.mapper.QuestionMapper;
 import com.atsistemas.EncuestaProj.model.Dificulty;
 import com.atsistemas.EncuestaProj.model.Question;
@@ -34,18 +32,13 @@ public class QuestionMapperImpl implements QuestionMapper {
 	
 	
 	@Override
-	public Question questionDtoToDao(QuestionDTO questionDto) throws DificultyNotFoundException, TagNotFoundException {
+	public Question questionDtoToDao(QuestionDTO questionDto) throws NotFoundException {
 		
 		Question question = questionMapper.map(questionDto, Question.class);
-		Optional<Dificulty> dificultySearch = dificultyService.findById(questionDto.getIdDificulty());
-		Optional<Tag> tagSearch = tagService.findById(questionDto.getIdTag());
-		if (dificultySearch.isPresent() && tagSearch.isPresent()){
-			question.setDificulty(dificultySearch.get());
-			question.setTag(tagSearch.get());
-		} else {
-			if (! dificultySearch.isPresent()) {throw new DificultyNotFoundException("Dificultad no encontrada idDificultad('"+ questionDto.getIdDificulty() +"')");}
-			if (! tagSearch.isPresent()) {throw new TagNotFoundException("Tag no encontrada idTag('"+ questionDto.getIdDificulty() +"')");}
-		}
+		Dificulty dificultySearch = dificultyService.findById(questionDto.getIdDificulty());
+		Tag tagSearch = tagService.findById(questionDto.getIdTag());
+		question.setDificulty(dificultySearch);
+		question.setTag(tagSearch);
 		return question;
 		
 	}
@@ -59,7 +52,7 @@ public class QuestionMapperImpl implements QuestionMapper {
 	}
 
 	@Override
-	public Set<Question> questionGetDtoToDao(Set<QuestionDTO> questions) throws DificultyNotFoundException, TagNotFoundException {
+	public Set<Question> questionGetDtoToDao(Set<QuestionDTO> questions) throws NotFoundException {
 		Set<Question> questionList = new HashSet<>();
 		for (QuestionDTO question : questions) 
 			questionList.add(questionDtoToDao(question));

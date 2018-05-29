@@ -16,7 +16,7 @@ import com.atsistemas.EncuestaProj.dto.QuestionDTO;
 import com.atsistemas.EncuestaProj.dto.QuestionDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
-import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.QuestionNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.QuestionMapper;
 import com.atsistemas.EncuestaProj.model.Answer;
@@ -61,28 +61,35 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	public Optional<Question> findById(Integer id) {
-		return questionDAO.findById(id);
+	public Question findById(Integer idQuestion) throws QuestionNotFoundException {
+		Optional<Question> questionSearch = questionDAO.findById(idQuestion);
+		if (questionSearch.isPresent())
+			return questionSearch.get();
+		else
+			throw new QuestionNotFoundException("Tag No encontrado idTag('"+ idQuestion +"')");
 	}
 
 	@Override
-	public void update(Question model, QuestionDTO dto) throws DificultyNotFoundException, TagNotFoundException {
-		Optional<Dificulty> dificultySearch = dificultyService.findById(dto.getIdDificulty());
-		Optional<Tag> tagSearch = tagService.findById(dto.getIdTag());
-		if (dificultySearch.isPresent() && tagSearch.isPresent()) {
-			model.setName(dto.getName());
-			model.setDificulty(dificultySearch.get());
-			model.setTag(tagSearch.get());
-			questionDAO.save(model);
-		} else {
-			if (!dificultySearch.isPresent()) {throw new DificultyNotFoundException("Dificulty no encontrada idDificulty('"+ dto.getIdDificulty() +"')");}
-			if (!tagSearch.isPresent()) {throw new TagNotFoundException("Tag no encontrada idDificulty('"+ dto.getIdTag() +"')");}
+	public void update(Integer idQuestion, QuestionDTO dto) throws NotFoundException {
+		Optional<Question> questionSearch = questionDAO.findById(idQuestion);
+		if (questionSearch.isPresent()) {
+			Question question = questionSearch.get();
+			Dificulty dificultySearch = dificultyService.findById(dto.getIdDificulty());
+			Tag tagSearch = tagService.findById(dto.getIdTag());
+			question.setName(dto.getName());
+			question.setDificulty(dificultySearch);
+			question.setTag(tagSearch);
+			questionDAO.save(question);	
 		}
 	}
 
 	@Override
-	public void delete(Question model) {
-		questionDAO.delete(model);
+	public void delete(Integer idQuestion) throws QuestionNotFoundException {
+		Optional<Question> questionSearch = questionDAO.findById(idQuestion);
+		if (questionSearch.isPresent())
+			questionDAO.delete(questionSearch.get());
+		else
+			throw new QuestionNotFoundException("Question no encontrada idQuestion('"+ idQuestion +"')");
 	}
 
 	@Override
@@ -91,44 +98,43 @@ public class QuestionServiceImpl implements QuestionService {
 	}	
 	
 	@Override
-	public Set<QuestionDTOPost> findAllByTag(Integer idTag, Pageable page) throws TagNotFoundException {
-		Optional<Tag> tagSearch = tagService.findById(idTag);
-		if (tagSearch.isPresent())
-			return questionMapper.QuestionGetDaoToDto(questionDAO.findAllByTag(page, tagSearch.get()).stream().collect(Collectors.toSet()));
-		else
-			throw new TagNotFoundException("Tag No encontrado idTag('"+ idTag +"')");
+	public Set<QuestionDTOPost> findAllByTag(Integer idTag, Pageable page) throws NotFoundException {
+		return questionMapper.QuestionGetDaoToDto(questionDAO.findAllByTag(page, tagService.findById(idTag)).stream().collect(Collectors.toSet()));
 	}
 
 	@Override
-	public Set<QuestionDTOPost> findAllByDificulty(Integer idDificulty, Pageable page) throws DificultyNotFoundException {
-		Optional<Dificulty> dificultySearch = dificultyService.findById(idDificulty);
-		if (dificultySearch.isPresent())
-			return questionMapper.QuestionGetDaoToDto(questionDAO.findAllByDificulty(page, dificultySearch.get()).stream().collect(Collectors.toSet()));
-		else
-			throw new DificultyNotFoundException("Dificultad no encontrada idDificultad('"+ idDificulty +"')");
+	public Set<QuestionDTOPost> findAllByDificulty(Integer idDificulty, Pageable page) throws NotFoundException {
+		return questionMapper.QuestionGetDaoToDto(questionDAO.findAllByDificulty(page, dificultyService.findById(idDificulty)).stream().collect(Collectors.toSet()));
 	}
 
 	@Override
-	public void assignSurvey(Question question, Integer idSurvey) throws SurveyNotFoundException {
-		Optional<Survey> surveySearch = surveyService.findById(idSurvey);
-		if (surveySearch.isPresent() && surveySearch.get().getPreguntas().size()<surveySearch.get().getMaxPreguntas()){
-			question.getCuestionarios().add(surveySearch.get());
-			questionDAO.save(question);
-		} else
-			throw new SurveyNotFoundException("Survey no encontrada idSurvey('"+ idSurvey +"') o está completo");
+	public void assignSurvey(Integer idQuestion, Integer idSurvey) throws NotFoundException {
+		Survey surveySearch = surveyService.findById(idSurvey);
+		if (surveySearch.getPreguntas().size()<surveySearch.getMaxPreguntas()){
+			Optional<Question> questionSearch = questionDAO.findById(idQuestion);
+			if (questionSearch.isPresent()){
+				Question question = questionSearch.get();
+				question.getCuestionarios().add(surveySearch);
+				questionDAO.save(question);
+			} else
+				throw new QuestionNotFoundException("Question no encontrada idQuestion('"+ idQuestion +"')");
+		} 
+	}
+
+	@Override
+	public void removeSurvey(Integer idQuestion, Integer idSurvey) throws NotFoundException {
+		Survey surveySearch = surveyService.findById(idSurvey);
+		if (surveySearch.getPreguntas().size()<surveySearch.getMaxPreguntas()){
+			Optional<Question> questionSearch = questionDAO.findById(idQuestion);
+			if (questionSearch.isPresent()){
+				Question question = questionSearch.get();
+				question.getCuestionarios().remove(surveySearch);
+				questionDAO.save(question);
+			} else
+				throw new QuestionNotFoundException("Question no encontrada idQuestion('"+ idQuestion +"')");
 			
-		
-	}
-
-	@Override
-	public void removeSurvey(Question question, Integer idSurvey) throws SurveyNotFoundException {
-		Optional<Survey> surveySearch = surveyService.findById(idSurvey);
-		if (surveySearch.isPresent()){
-			question.getCuestionarios().remove(surveySearch.get());
-			questionDAO.save(question);
-		} else
-			throw new SurveyNotFoundException("Survey no encontrada idSurvey('"+ idSurvey +"')");
-		
+			
+		} 		
 	}
 
 	@Override
@@ -144,13 +150,13 @@ public class QuestionServiceImpl implements QuestionService {
 
 	private void initDatos() throws NotFoundException {
 		
-		if (!dificultyService.findByName("facil").isPresent()) { dificultyService.create(new Dificulty("facil")); }
-		if (!dificultyService.findByName("medio").isPresent()) { dificultyService.create(new Dificulty("medio")); }
-		if (!dificultyService.findByName("dificil").isPresent()) { dificultyService.create(new Dificulty("dificil")); }
+		if (dificultyService.findByName("facil")==null) { dificultyService.create(new Dificulty("facil")); }
+		if (dificultyService.findByName("medio")==null) { dificultyService.create(new Dificulty("medio")); }
+		if (dificultyService.findByName("dificil")==null) { dificultyService.create(new Dificulty("dificil")); }
 		
-		if (!tagService.findByName("jpa").isPresent()) {tagService.create(new Tag("jpa"));}
-		if (!tagService.findByName("mongodb").isPresent()) {tagService.create(new Tag("mongodb"));}
-		if (!tagService.findByName("hibernate").isPresent()) {tagService.create(new Tag("hibernate"));}
+		if (tagService.findByName("jpa")==null) {tagService.create(new Tag("jpa"));}
+		if (tagService.findByName("mongodb")==null) {tagService.create(new Tag("mongodb"));}
+		if (tagService.findByName("hibernate")==null) {tagService.create(new Tag("hibernate"));}
 		
 		Question question;
 		for (int i=1;i<20;i++) {
@@ -177,10 +183,10 @@ public class QuestionServiceImpl implements QuestionService {
 		
 	}
 	
-	private Question addQuestion(String dificultad, String tag, String textoQuestion) {
+	private Question addQuestion(String dificultad, String tag, String textoQuestion) throws DificultyNotFoundException, TagNotFoundException {
 		Question question = new Question();
-		question.setDificulty(dificultyService.findByName(dificultad).get());
-		question.setTag(tagService.findByName(tag).get());
+		question.setDificulty(dificultyService.findByName(dificultad));
+		question.setTag(tagService.findByName(tag));
 		question.setName(textoQuestion);
 		return questionDAO.save(question);
 	}
@@ -200,15 +206,9 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	public Set<QuestionDTOPost> findAllBySurvey(Integer idSurvey, PageRequest of) throws SurveyNotFoundException {
-		Optional<Survey> surveySearch = surveyService.findById(idSurvey);
-		if (surveySearch.isPresent()){
-			Survey survey = surveySearch.get();
-			return questionMapper.QuestionGetDaoToDto(questionDAO.findAllByCuestionarios(of, survey).stream().collect(Collectors.toSet()));
-		} else {
-			throw new SurveyNotFoundException("Survey no encontrada con idSurvey('"+ idSurvey +"')");
-		}
-		
+	public Set<QuestionDTOPost> findAllBySurvey(Integer idSurvey, PageRequest of) throws NotFoundException {
+		Survey survey = surveyService.findById(idSurvey);
+		return questionMapper.QuestionGetDaoToDto(questionDAO.findAllByCuestionarios(of, survey).stream().collect(Collectors.toSet()));
 	}
 
 

@@ -15,9 +15,8 @@ import org.springframework.stereotype.Service;
 import com.atsistemas.EncuestaProj.dao.SurveyDAO;
 import com.atsistemas.EncuestaProj.dto.SurveyDTO;
 import com.atsistemas.EncuestaProj.dto.SurveyDTOPost;
-import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
-import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.SurveyMapper;
 import com.atsistemas.EncuestaProj.model.Course;
 import com.atsistemas.EncuestaProj.model.Question;
@@ -59,55 +58,62 @@ public class SurveyServiceImpl implements SurveyService {
 	}
 
 	@Override
-	public void update(Survey model, SurveyDTO dto) throws NotFoundException {
-		Optional<Course> courseSearch = courseService.findById(dto.getIdCourse());
-		if (courseSearch.isPresent()){
-			model.setEsAleatorio(dto.getEsAleatorio());
-			model.setIdentificador(dto.getIdentificador());
-			model.setMaxPreguntas(dto.getMaxPreguntas());
-			model.setCourse(courseSearch.get());
-			surveyDAO.save(model);
+	public void update(Integer idSurvey, SurveyDTO dto) throws NotFoundException {
+		Optional<Survey> surveySearch = surveyDAO.findById(idSurvey);
+		if (surveySearch.isPresent()){
+			Survey survey = surveySearch.get();
+			survey.setEsAleatorio(dto.getEsAleatorio());
+			survey.setIdentificador(dto.getIdentificador());
+			survey.setMaxPreguntas(dto.getMaxPreguntas());
+			survey.setCourse(courseService.findById(dto.getIdCourse()));
+			surveyDAO.save(survey);
 		} else
-			throw new CourseNotfoundException("Course no encontrado idCourse('"+ dto.getIdCourse() +"')");
+			throw new SurveyNotFoundException("Survey no encontrado idSurvey('"+ idSurvey +"')");
 		
 	}
 
 	@Override
-	public void delete(Survey model) {
-		surveyDAO.delete(model);
+	public void delete(Integer idSurvey) throws SurveyNotFoundException {
+		Optional<Survey> surveySearch = surveyDAO.findById(idSurvey);
+		if (surveySearch.isPresent())
+			surveyDAO.delete(surveySearch.get());
+		else
+			throw new SurveyNotFoundException("Survey no encontrado idSurvey('"+ idSurvey +"')");
 	}	
 	
 	@Override
-	public Optional<Survey> findById(Integer id) {
-		return surveyDAO.findById(id);
+	public Survey findById(Integer idSurvey) throws SurveyNotFoundException {
+		Optional<Survey> surveySearch = surveyDAO.findById(idSurvey);
+		if (surveySearch.isPresent())
+			return surveySearch.get();
+		else
+			throw new SurveyNotFoundException("Survey no encontrado idSurvey('"+ idSurvey +"')");
 	}
 
 	@Override
-	public Set<SurveyDTOPost> findAllByCourse(Pageable page, int idCourse) throws CourseNotfoundException {
-		Optional<Course> courseSearch = courseService.findById(idCourse);
-		if (courseSearch.isPresent())
-			return surveyMapper.surveyGetDaoToDto(surveyDAO.findAllByCourse(page, courseSearch.get()).stream().collect(Collectors.toSet()));
-		else
-			throw new CourseNotfoundException("Course no encontrado idCourse('"+ idCourse +"')");
+	public Set<SurveyDTOPost> findAllByCourse(Pageable page, Integer idCourse) throws NotFoundException {
+		Course courseSearch = courseService.findById(idCourse);
+		return surveyMapper.surveyGetDaoToDto(surveyDAO.findAllByCourse(page, courseSearch).stream().collect(Collectors.toSet()));
 	}	
 
 	@Override
-	public Set<SurveyDTOPost> findAllByTag(PageRequest page, Integer idTag) throws TagNotFoundException {
-		Optional<Tag> tagSearch = tagService.findById(idTag);
-		if (tagSearch.isPresent())
-			return surveyMapper.surveyGetDaoToDto(surveyDAO.findAllByTags(page, tagSearch.get()).stream().collect(Collectors.toSet()));
-		else
-			throw new TagNotFoundException("Tag no encontrado idCourse('"+ idTag +"')");
+	public Set<SurveyDTOPost> findAllByTag(PageRequest page, Integer idTag) throws NotFoundException {
+		Tag tagSearch = tagService.findById(idTag);
+		return surveyMapper.surveyGetDaoToDto(surveyDAO.findAllByTags(page, tagSearch).stream().collect(Collectors.toSet()));
 	}
 	
 	@Override
-	public void generateRamdomQuestions(Survey survey) {
-			
-		List<Question> questions = new ArrayList<Question>(questionService.findAllbyTags(survey.getTags()).stream().collect(Collectors.toSet()));
-		while (questions.size()>0 && survey.getPreguntas().size()<survey.getMaxPreguntas())
-			survey.getPreguntas().add(questions.remove(ThreadLocalRandom.current().nextInt(0, questions.size()-1)));
-		if (survey.getPreguntas().size()==survey.getMaxPreguntas()) {survey.setEsCerrado(true);}
-		surveyDAO.save(survey);
+	public void generateRamdomQuestions(Integer idSurvey) throws SurveyNotFoundException {
+		Optional<Survey> surveySearch = surveyDAO.findById(idSurvey);
+		if (surveySearch.isPresent()) {
+			Survey survey = surveySearch.get();
+			List<Question> questions = new ArrayList<Question>(questionService.findAllbyTags(survey.getTags()).stream().collect(Collectors.toSet()));
+			while (questions.size()>0 && survey.getPreguntas().size()<survey.getMaxPreguntas())
+				survey.getPreguntas().add(questions.remove(ThreadLocalRandom.current().nextInt(0, questions.size()-1)));
+			if (survey.getPreguntas().size()==survey.getMaxPreguntas()) {survey.setEsCerrado(true);}
+			surveyDAO.save(survey);
+		} else
+			throw new SurveyNotFoundException("Survey no encontrado idSurvey('"+ idSurvey +"')");
 		
 	}
 	

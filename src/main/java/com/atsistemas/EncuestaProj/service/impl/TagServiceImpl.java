@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.atsistemas.EncuestaProj.dao.TagDAO;
 import com.atsistemas.EncuestaProj.dto.TagDTO;
-import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
-import com.atsistemas.EncuestaProj.model.Survey;
+import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
 import com.atsistemas.EncuestaProj.model.Tag;
 import com.atsistemas.EncuestaProj.service.SurveyService;
 import com.atsistemas.EncuestaProj.service.TagService;
@@ -33,8 +33,12 @@ public class TagServiceImpl implements TagService {
 	}
 
 	@Override
-	public Optional<Tag> findById(Integer id) {
-		return tagDAO.findById(id);
+	public Tag findById(Integer id) throws TagNotFoundException {
+		Optional<Tag> tagSearch = tagDAO.findById(id);
+		if (tagSearch.isPresent())
+			return tagSearch.get();
+		else
+			throw new TagNotFoundException("Tag no encontrado idTag('"+ id + "')");
 	}
 
 	@Override
@@ -45,40 +49,56 @@ public class TagServiceImpl implements TagService {
 	}
 
 	@Override
-	public void update(Tag model, TagDTO dto) {
-		model.setName(dto.getName());
-		tagDAO.save(model);
-	}
-
-	@Override
-	public void delete(Tag model) {
-		tagDAO.delete(model);
-
-	}
-
-	@Override
-	public Optional<Tag> findByName(String name) {
-		return tagDAO.findOneByName(name);
-	}
-
-	@Override
-	public void asignSurvey(Tag tag, Integer idSurvey) throws SurveyNotFoundException {
-		Optional<Survey> surveySearch = surveyService.findById(idSurvey);
-		if (surveySearch.isPresent()){
-			tag.getCuestionarios().add(surveySearch.get());
+	public void update(Integer idTag, TagDTO dto) throws TagNotFoundException {
+		Optional<Tag> tagSearch = tagDAO.findById(idTag);
+		if (tagSearch.isPresent()){
+			Tag tag = tagSearch.get();
+			tag.setName(dto.getName());
 			tagDAO.save(tag);
 		} else 
-			throw new SurveyNotFoundException("Survey No Encontrado idSurvey('"+ idSurvey +"')");
+			throw new TagNotFoundException("Tag no encontrado idTag('"+ idTag + "')");
 	}
 
 	@Override
-	public void removeSurvey(Tag tag, Integer idSurvey) throws SurveyNotFoundException {
-		Optional<Survey> surveySearch = surveyService.findById(idSurvey);
-		if (surveySearch.isPresent()){
-			tag.getCuestionarios().remove(surveySearch.get());
+	public void delete(Integer idTag) throws TagNotFoundException {
+		Optional<Tag> tagSearch = tagDAO.findById(idTag);
+		if (tagSearch.isPresent())
+			tagDAO.delete(tagSearch.get());
+		else
+			throw new TagNotFoundException("Tag no encontrado idTag('"+ idTag + "')");
+
+	}
+
+	@Override
+	public Tag findByName(String name) throws TagNotFoundException {
+		Optional<Tag> tagSearch = tagDAO.findOneByName(name);
+		if (tagSearch.isPresent())
+			return tagSearch.get();
+		else
+			throw new TagNotFoundException("Tag no encontrado name('"+ name + "')");
+
+	}
+
+	@Override
+	public void asignSurvey(Integer idTag, Integer idSurvey) throws NotFoundException {
+		Optional<Tag> tagSearch = tagDAO.findById(idTag);
+		if (tagSearch.isPresent()){
+			Tag tag = tagSearch.get();
+			tag.getCuestionarios().add(surveyService.findById(idSurvey));
 			tagDAO.save(tag);
 		} else 
-			throw new SurveyNotFoundException("Survey No Encontrado idSurvey('"+ idSurvey +"')");
+			throw new TagNotFoundException("Tag No Encontrado idTag('"+ idTag +"')");
+	}
+
+	@Override
+	public void removeSurvey(Integer idTag, Integer idSurvey) throws NotFoundException {
+		Optional<Tag> tagSearch = tagDAO.findById(idTag);
+		if (tagSearch.isPresent()){
+			Tag tag = tagSearch.get();
+			tag.getCuestionarios().remove(surveyService.findById(idSurvey));
+			tagDAO.save(tag);
+		} else 
+			throw new TagNotFoundException("Tag No Encontrado idTag('"+ idTag +"')");
 		
 	}
 

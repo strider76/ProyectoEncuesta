@@ -1,7 +1,6 @@
 package com.atsistemas.EncuestaProj.mapper.impl;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import org.dozer.DozerBeanMapper;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.atsistemas.EncuestaProj.dto.SurveyDTO;
 import com.atsistemas.EncuestaProj.dto.SurveyDTOPost;
-import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
+import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.mapper.SurveyMapper;
 import com.atsistemas.EncuestaProj.model.Course;
 import com.atsistemas.EncuestaProj.model.Survey;
@@ -26,15 +25,11 @@ public class SurveyMapperImpl implements SurveyMapper {
 	CourseService courseService;
 	
 	@Override
-	public Survey surveyDtoToDao(SurveyDTO survey) throws CourseNotfoundException {
+	public Survey surveyDtoToDao(SurveyDTO survey) throws NotFoundException {
 		Survey surveyRes = surveyMapper.map(survey, Survey.class);
-		Optional<Course> courseSearch = courseService.findById(survey.getIdCourse());
-		if (courseSearch.isPresent()){
-			surveyRes.setCourse(courseSearch.get());
-			return surveyRes;
-		} else {
-			throw new CourseNotfoundException("Survey no Encontrada idSurvey('"+ survey.getIdCourse() +"')");
-		}
+		Course courseSearch = courseService.findById(survey.getIdCourse());
+		surveyRes.setCourse(courseSearch);
+		return surveyRes;
 	}
 
 	@Override
@@ -53,7 +48,7 @@ public class SurveyMapperImpl implements SurveyMapper {
 	}
 
 	@Override
-	public Set<Survey> surveyGetDtoToDao(Set<SurveyDTO> surveys) throws CourseNotfoundException {
+	public Set<Survey> surveyGetDtoToDao(Set<SurveyDTO> surveys) throws NotFoundException {
 		Set<Survey> surveyRes = new HashSet<>();
 		for (SurveyDTO survey : surveys)
 			surveyRes.add(surveyDtoToDao(survey));

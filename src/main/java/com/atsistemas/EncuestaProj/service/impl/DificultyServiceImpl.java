@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.atsistemas.EncuestaProj.dao.DificultyDAO;
 import com.atsistemas.EncuestaProj.dto.DificultyDTO;
+import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.model.Dificulty;
 import com.atsistemas.EncuestaProj.service.DificultyService;
 
@@ -28,8 +29,34 @@ public class DificultyServiceImpl implements DificultyService, InitializingBean 
 	}
 
 	@Override
-	public Optional<Dificulty> findById(Integer idDificult) {
-		return dificultyDAO.findById(idDificult);
+	public void update(Integer idDificulty, DificultyDTO dto) throws DificultyNotFoundException {
+		Optional<Dificulty> dificultySearch = dificultyDAO.findById(idDificulty);
+		if (dificultySearch.isPresent()){
+			Dificulty dificulty = dificultySearch.get();
+			dificulty.setName(dto.getName());
+			dificultyDAO.save(dificulty);
+		} else {
+			throw new DificultyNotFoundException("Dificulty no encontrada idDificulty('"+ idDificulty +"')");
+		}
+	}
+
+	@Override
+	public void delete(Integer idDificulty) throws DificultyNotFoundException {
+		Optional<Dificulty> dificultySearch = dificultyDAO.findById(idDificulty);
+		if (dificultySearch.isPresent())
+			dificultyDAO.delete(dificultySearch.get());
+		else
+			throw new DificultyNotFoundException("Dificulty no encontrada idDificulty('"+ idDificulty +"')");
+		
+	}	
+	
+	@Override
+	public Dificulty findById(Integer idDificult) throws DificultyNotFoundException {
+		Optional<Dificulty> dificultySearch = dificultyDAO.findById(idDificult);
+		if (dificultySearch.isPresent())
+			return dificultySearch.get();
+		else
+			throw new DificultyNotFoundException("Dificulty no encontrada idDificulty('"+ idDificult +"')");
 	}
 
 	@Override
@@ -38,22 +65,18 @@ public class DificultyServiceImpl implements DificultyService, InitializingBean 
 	}
 
 	@Override
-	public void update(Dificulty model, DificultyDTO dto) {
-		model.setName(dto.getName());
-		dificultyDAO.save(model);
-		
+	public Dificulty findByName(String name) throws DificultyNotFoundException {
+		Optional<Dificulty> dificultSearch = dificultyDAO.findOneByName(name);
+		if (dificultSearch.isPresent())
+			return dificultSearch.get();
+		else
+			throw new DificultyNotFoundException("Dificulty no encontrada name('"+ name +"')");
 	}
+	
+	
 
-	@Override
-	public void delete(Dificulty model) {
-		dificultyDAO.delete(model);
-		
-	}
 
-	@Override
-	public Optional<Dificulty> findByName(String name) {
-		return dificultyDAO.findOneByName(name);
-	}
+
 
 	@Override
 	public void afterPropertiesSet() throws Exception {

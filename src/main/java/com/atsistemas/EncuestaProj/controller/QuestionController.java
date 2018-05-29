@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.controller;
 
-import java.util.Optional;
+
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.atsistemas.EncuestaProj.dto.QuestionDTO;
 import com.atsistemas.EncuestaProj.dto.QuestionDTOPost;
-import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
-import com.atsistemas.EncuestaProj.excepciones.QuestionNotFoundException;
-import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
-import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
 import com.atsistemas.EncuestaProj.mapper.QuestionMapper;
-import com.atsistemas.EncuestaProj.model.Question;
 import com.atsistemas.EncuestaProj.service.QuestionService;
 
 @RestController
@@ -41,12 +36,8 @@ public class QuestionController {
 
 
 	@GetMapping(value="/{idQuestion}")
-	public QuestionDTOPost findById(@PathVariable Integer idQuestion) throws QuestionNotFoundException {
-		Optional<Question> questionSearch = questionService.findById(idQuestion);
-		if (questionSearch.isPresent())
-			return questionMapper.questionDaoToDto(questionSearch.get());
-		else
-			throw new QuestionNotFoundException("Question no encontrada idQuestion('"+idQuestion+"')");
+	public QuestionDTOPost findById(@PathVariable Integer idQuestion) throws NotFoundException {
+		return questionMapper.questionDaoToDto(questionService.findById(idQuestion));
 	}
 	
 	@GetMapping
@@ -60,7 +51,7 @@ public class QuestionController {
 	@ResponseStatus(code=HttpStatus.OK)
 	public Set<QuestionDTOPost> findAllByTag(@PathVariable Integer idTag,
 											 @RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
-											 @RequestParam(defaultValue="10", required=false,name="size") Integer pageSize) throws TagNotFoundException {
+											 @RequestParam(defaultValue="10", required=false,name="size") Integer pageSize) throws NotFoundException {
 		return questionService.findAllByTag(idTag,PageRequest.of(pageNumber, pageSize));
 		
 	}
@@ -69,7 +60,7 @@ public class QuestionController {
 	@ResponseStatus(code=HttpStatus.OK)
 	public Set<QuestionDTOPost> findAllBySurvey(@PathVariable Integer idSurvey,
 												@RequestParam(defaultValue="0",required=false, name="page") Integer pageNumber,
-												@RequestParam(defaultValue="10",required=false, name="size") Integer pageSize) throws SurveyNotFoundException {
+												@RequestParam(defaultValue="10",required=false, name="size") Integer pageSize) throws NotFoundException {
 		return questionService.findAllBySurvey(idSurvey,PageRequest.of(pageNumber, pageSize));
 	}
 	
@@ -77,9 +68,8 @@ public class QuestionController {
 	@ResponseStatus(code=HttpStatus.OK)
 	public Set<QuestionDTOPost> findAllByDificulty(@PathVariable Integer idDificulty,
 													@RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
-													@RequestParam(defaultValue="10",required=false,name="size") Integer pageSize) throws DificultyNotFoundException {
+													@RequestParam(defaultValue="10",required=false,name="size") Integer pageSize) throws NotFoundException {
 		return questionService.findAllByDificulty(idDificulty,PageRequest.of(pageNumber, pageSize));
-		
 	}
 	
 	@PostMapping
@@ -90,43 +80,27 @@ public class QuestionController {
 	
 	@PostMapping("/{idQuestion}/survey/{idSurvey}")
 	@ResponseStatus(code= HttpStatus.CREATED)
-	public void assignQuestionToSuervey(@PathVariable Integer idQuestion, @PathVariable Integer idSurvey) throws SurveyNotFoundException, QuestionNotFoundException {
-		Optional<Question> questionSearch = questionService.findById(idQuestion);
-		if (questionSearch.isPresent())
-			questionService.assignSurvey(questionSearch.get(),idSurvey);
-		else
-			throw new QuestionNotFoundException("Question no encontrada idQuestion('"+ idQuestion +"')");
+	public void assignQuestionToSuervey(@PathVariable Integer idQuestion, @PathVariable Integer idSurvey) throws NotFoundException {
+		questionService.assignSurvey(idQuestion,idSurvey);
 	}
 
 	@DeleteMapping("/{idQuestion}/survey/{idSurvey}")
 	@ResponseStatus(code= HttpStatus.CREATED)
-	public void removeQuestionToSuervey(@PathVariable Integer idQuestion, @PathVariable Integer idSurvey) throws SurveyNotFoundException, QuestionNotFoundException {
-		Optional<Question> questionSearch = questionService.findById(idQuestion);
-		if (questionSearch.isPresent())
-			questionService.removeSurvey(questionSearch.get(),idSurvey);
-		else
-			throw new QuestionNotFoundException("Question no encontrada idQuestion('"+ idQuestion +"')");
+	public void removeQuestionToSuervey(@PathVariable Integer idQuestion, @PathVariable Integer idSurvey) throws NotFoundException {
+		questionService.removeSurvey(idQuestion,idSurvey);
 	}
 		
 	
 	@DeleteMapping("/{idQuestion}")
 	@ResponseStatus(code=HttpStatus.OK)
-	public void delete(@PathVariable Integer idQuestion) throws QuestionNotFoundException {
-		Optional<Question> questionSearch = questionService.findById(idQuestion);
-		if (questionSearch.isPresent())
-			questionService.delete(questionSearch.get());
-		else
-			throw new QuestionNotFoundException("Question no encontrada idQuestion('"+ idQuestion +"')");
+	public void delete(@PathVariable Integer idQuestion) throws NotFoundException {
+		questionService.delete(idQuestion);
 	}
 	
 	@PutMapping("/{idQuestion}")
 	@ResponseStatus(code=HttpStatus.OK)
 	public void update(@PathVariable Integer idQuestion, @RequestBody QuestionDTO question) throws NotFoundException {
-		Optional<Question> questionSearch = questionService.findById(idQuestion);
-		if (questionSearch.isPresent())
-			questionService.update(questionSearch.get(), question);
-		else
-			throw new QuestionNotFoundException("Question no encontrada idQuestion('"+ idQuestion +"')");
+		questionService.update(idQuestion, question);
 	}
 	
 
