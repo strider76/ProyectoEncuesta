@@ -1,5 +1,7 @@
 package com.atsistemas.EncuestaProj.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -7,7 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Size;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,16 +29,25 @@ public class Result {
 	private User user;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_course")
+	private Course course;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_cuestionario")
 	private Survey cuestionario;
 	
-	@Size(min=0,max=10)
-	private Integer puntuacion;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_question")
+	private Question question;
 	
-	@Override
-	public String toString() {
-		return "Result [idResult=" + idResult + ", puntuacion=" + puntuacion + "]";
-	}
+	private String questionName;
+	
+	private String answer;
+	
+	private Boolean esCorrecto;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date creationDate;
 	
 	
 }

@@ -14,6 +14,7 @@ import com.atsistemas.EncuestaProj.dto.CourseDTO;
 import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.model.Course;
+import com.atsistemas.EncuestaProj.model.Survey;
 import com.atsistemas.EncuestaProj.model.User;
 import com.atsistemas.EncuestaProj.service.CourseService;
 import com.atsistemas.EncuestaProj.service.UserService;
@@ -105,6 +106,16 @@ public class CourseServiceImpl implements CourseService {
 		} else {
 			throw new CourseNotfoundException("Course no enconrtado con id('"+ idCourse +"')");
 		}
+	}
+
+	@Override
+	public Set<Survey> getAllSurveyCourse(Integer idCourse) throws CourseNotfoundException {
+		Optional<Course> courseSearch = courseDAO.findById(idCourse);
+		if (courseSearch.isPresent())
+			return courseSearch.get().getCuestionarios();
+		else 
+			throw new CourseNotfoundException("Course no enconrtado con id('"+ idCourse +"')");
+			
 	}
 
 

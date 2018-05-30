@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.atsistemas.EncuestaProj.dto.CourseDTO;
 import com.atsistemas.EncuestaProj.dto.CourseDTOPost;
+import com.atsistemas.EncuestaProj.dto.SurveyDTOPost;
 import com.atsistemas.EncuestaProj.dto.UserDTOPost;
+import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.mapper.CourseMapper;
+import com.atsistemas.EncuestaProj.mapper.SurveyMapper;
 import com.atsistemas.EncuestaProj.mapper.UserMapper;
 import com.atsistemas.EncuestaProj.service.CourseService;
 
@@ -39,6 +42,9 @@ public class CourseController {
 	
 	@Autowired
 	CourseMapper courseMapper;
+	
+	@Autowired
+	SurveyMapper surveyMapper;
 	
 	@GetMapping
 	public Set<CourseDTOPost> findAll(@RequestParam(defaultValue="0",required=false) Integer page,
@@ -84,4 +90,10 @@ public class CourseController {
 	public Set<UserDTOPost> getUsersCourse(@PathVariable Integer idCourse) throws NotFoundException {
 		return userMapper.userGetDaoToDto(courseService.getAllUserCourse(idCourse));
 	}
+	
+	@GetMapping("/{idCourse}/survey")
+	public Set<SurveyDTOPost> getSurveyCourse(@PathVariable Integer idCourse) throws CourseNotfoundException {
+		return surveyMapper.surveyGetDaoToDto(courseService.getAllSurveyCourse(idCourse));
+	}
+	
 }
