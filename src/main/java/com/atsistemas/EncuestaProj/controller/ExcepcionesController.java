@@ -12,7 +12,9 @@ import com.atsistemas.EncuestaProj.excepciones.AnswerNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
 import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.QuestionNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.SurveyExcedQuestions;
 import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.SurveyQuestionRepeatedException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.UserNotFoundException;
 
@@ -59,7 +61,17 @@ public class ExcepcionesController {
 	@ExceptionHandler(AnswerNotFoundException.class)
 	public ResponseEntity<ErrorDTO> existeAnswer(Exception ex){
 		return new ResponseEntity<ErrorDTO>(new ErrorDTO(ex.getMessage()), HttpStatus.NOT_FOUND);
-	}		
+	}
+	
+	@ExceptionHandler(SurveyQuestionRepeatedException.class)
+	public ResponseEntity<ErrorDTO> QuestionRepeated(Exception ex){
+		return new ResponseEntity<ErrorDTO>(new ErrorDTO(ex.getMessage()), HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(SurveyExcedQuestions.class)
+	public ResponseEntity<ErrorDTO> QuestionExced(Exception ex){
+		return new ResponseEntity<ErrorDTO>(new ErrorDTO(ex.getMessage()), HttpStatus.NOT_FOUND);
+	}
 	
 	@ExceptionHandler(NumberFormatException.class)
 	public ResponseEntity<ErrorDTO> exNumerico(Exception ex, WebRequest request) {

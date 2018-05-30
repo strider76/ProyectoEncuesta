@@ -1,6 +1,5 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -102,10 +101,7 @@ public class CourseServiceImpl implements CourseService {
 	public Set<User> getAllUserCourse(Integer idCourse) throws NotFoundException {
 		Optional<Course> courseSearch = courseDAO.findById(idCourse);
 		if (courseSearch.isPresent()) {
-			Set<User> usersCourse = new HashSet<>();
-			for (User user : courseSearch.get().getUsers()) 
-				usersCourse.add(user);
-			return usersCourse;
+			return courseSearch.get().getUsers();
 		} else {
 			throw new CourseNotfoundException("Course no enconrtado con id('"+ idCourse +"')");
 		}

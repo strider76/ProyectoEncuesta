@@ -1,24 +1,24 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.atsistemas.EncuestaProj.dao.QuestionDAO;
 import com.atsistemas.EncuestaProj.dto.QuestionDTO;
-import com.atsistemas.EncuestaProj.dto.QuestionDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.QuestionNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
-import com.atsistemas.EncuestaProj.mapper.QuestionMapper;
 import com.atsistemas.EncuestaProj.model.Answer;
 import com.atsistemas.EncuestaProj.model.Dificulty;
 import com.atsistemas.EncuestaProj.model.Question;
@@ -47,10 +47,6 @@ public class QuestionServiceImpl implements QuestionService {
 	
 	@Autowired
 	private AnswerService answerService;
-	
-	@Autowired
-	private QuestionMapper questionMapper;
-	
 	
 	
 	
@@ -97,15 +93,7 @@ public class QuestionServiceImpl implements QuestionService {
 		return questionDAO.findAll(pagina).stream().collect(Collectors.toSet());
 	}	
 	
-	@Override
-	public Set<QuestionDTOPost> findAllByTag(Integer idTag, Pageable page) throws NotFoundException {
-		return questionMapper.QuestionGetDaoToDto(questionDAO.findAllByTag(page, tagService.findById(idTag)).stream().collect(Collectors.toSet()));
-	}
 
-	@Override
-	public Set<QuestionDTOPost> findAllByDificulty(Integer idDificulty, Pageable page) throws NotFoundException {
-		return questionMapper.QuestionGetDaoToDto(questionDAO.findAllByDificulty(page, dificultyService.findById(idDificulty)).stream().collect(Collectors.toSet()));
-	}
 
 	@Override
 	public void assignSurvey(Integer idQuestion, Integer idSurvey) throws NotFoundException {
@@ -137,10 +125,6 @@ public class QuestionServiceImpl implements QuestionService {
 		} 		
 	}
 
-	@Override
-	public Set<Question> findAllbyTags(Set<Tag> tags) {
-		return questionDAO.findAllByTag(tags);
-	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -150,14 +134,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 	private void initDatos() throws NotFoundException {
 		
-		if (dificultyService.findByName("facil")==null) { dificultyService.create(new Dificulty("facil")); }
-		if (dificultyService.findByName("medio")==null) { dificultyService.create(new Dificulty("medio")); }
-		if (dificultyService.findByName("dificil")==null) { dificultyService.create(new Dificulty("dificil")); }
-		
-		if (tagService.findByName("jpa")==null) {tagService.create(new Tag("jpa"));}
-		if (tagService.findByName("mongodb")==null) {tagService.create(new Tag("mongodb"));}
-		if (tagService.findByName("hibernate")==null) {tagService.create(new Tag("hibernate"));}
-		
+	
 		Question question;
 		for (int i=1;i<20;i++) {
 			question = addQuestion("facil", "jpa", "pregunta jpa"+i);
@@ -205,13 +182,29 @@ public class QuestionServiceImpl implements QuestionService {
 		
 	}
 
+
 	@Override
-	public Set<QuestionDTOPost> findAllBySurvey(Integer idSurvey, PageRequest of) throws NotFoundException {
-		Survey survey = surveyService.findById(idSurvey);
-		return questionMapper.QuestionGetDaoToDto(questionDAO.findAllByCuestionarios(of, survey).stream().collect(Collectors.toSet()));
+	public Set<Answer> findAnswerByQuestion(Pageable page, Integer idQuestion) throws QuestionNotFoundException {
+		Optional<Question> questionSearch = questionDAO.findById(idQuestion);
+		if (questionSearch.isPresent())
+			return subSet(page,questionSearch.get().getAnswers());
+		else
+			throw new QuestionNotFoundException("Question no encontrada idQuestion('"+ idQuestion +"')");
 	}
 
 
+	private Set<Answer> subSet (Pageable page, Set<Answer> inicial) {
+		List<Answer> list = new ArrayList<>(inicial);
+		Integer posicionInicial = page.getPageSize()*page.getPageNumber();
+		Integer posicionFinal = (list.size() > (posicionInicial+page.getPageSize()))?posicionInicial+page.getPageSize():list.size();
+		return new LinkedHashSet<>(list.subList(posicionInicial, posicionFinal));
+		
+	}
+
+	@Override
+	public Set<Question> findQuestionByTag(Set<Tag> tags) {
+		return questionDAO.findAllByTagIn(tags);
+	}
 
 
 

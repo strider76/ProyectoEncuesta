@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.atsistemas.EncuestaProj.dto.AnswerDTOPost;
 import com.atsistemas.EncuestaProj.dto.QuestionDTO;
 import com.atsistemas.EncuestaProj.dto.QuestionDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.QuestionNotFoundException;
+import com.atsistemas.EncuestaProj.mapper.AnswerMapper;
 import com.atsistemas.EncuestaProj.mapper.QuestionMapper;
 import com.atsistemas.EncuestaProj.service.QuestionService;
 
@@ -33,45 +35,31 @@ public class QuestionController {
 	
 	@Autowired
 	QuestionMapper questionMapper;
+	
+	@Autowired
+	AnswerMapper answerMapper;
 
 
-	@GetMapping(value="/{idQuestion}")
+	@GetMapping("/{idQuestion}")
 	public QuestionDTOPost findById(@PathVariable Integer idQuestion) throws NotFoundException {
 		return questionMapper.questionDaoToDto(questionService.findById(idQuestion));
 	}
 	
 	@GetMapping
-	@ResponseStatus(code=HttpStatus.OK)
 	public Set<QuestionDTOPost> findAll(@RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
 										@RequestParam(defaultValue="10", required=false,name="size") Integer pageSize) {
 		return questionMapper.QuestionGetDaoToDto(questionService.findAll(PageRequest.of(pageNumber, pageSize)));
 	}
 	
-	@GetMapping("/tag/{idTag}")
-	@ResponseStatus(code=HttpStatus.OK)
-	public Set<QuestionDTOPost> findAllByTag(@PathVariable Integer idTag,
-											 @RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
-											 @RequestParam(defaultValue="10", required=false,name="size") Integer pageSize) throws NotFoundException {
-		return questionService.findAllByTag(idTag,PageRequest.of(pageNumber, pageSize));
-		
-	}
 	
-	@GetMapping("/survey/{idSurvey}")
-	@ResponseStatus(code=HttpStatus.OK)
-	public Set<QuestionDTOPost> findAllBySurvey(@PathVariable Integer idSurvey,
-												@RequestParam(defaultValue="0",required=false, name="page") Integer pageNumber,
-												@RequestParam(defaultValue="10",required=false, name="size") Integer pageSize) throws NotFoundException {
-		return questionService.findAllBySurvey(idSurvey,PageRequest.of(pageNumber, pageSize));
+
+	@GetMapping("/{idQuestion}/answer")
+	public Set<AnswerDTOPost> findAnswerByQuestion(@PathVariable Integer idQuestion,
+													 @RequestParam(defaultValue="0",required=false, name="page") Integer pageNumber,
+													 @RequestParam(defaultValue="10",required=false,name="size") Integer pageSize) throws QuestionNotFoundException {
+		return answerMapper.AnswerGetsDaoToDto(questionService.findAnswerByQuestion(PageRequest.of(pageNumber, pageSize),idQuestion));
 	}
-	
-	@GetMapping("/dificulty/{idDificulty}")
-	@ResponseStatus(code=HttpStatus.OK)
-	public Set<QuestionDTOPost> findAllByDificulty(@PathVariable Integer idDificulty,
-													@RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
-													@RequestParam(defaultValue="10",required=false,name="size") Integer pageSize) throws NotFoundException {
-		return questionService.findAllByDificulty(idDificulty,PageRequest.of(pageNumber, pageSize));
-	}
-	
+
 	@PostMapping
 	@ResponseStatus(code=HttpStatus.CREATED)
 	public QuestionDTOPost create(@RequestBody QuestionDTO questionDTO) throws NotFoundException {
@@ -85,14 +73,12 @@ public class QuestionController {
 	}
 
 	@DeleteMapping("/{idQuestion}/survey/{idSurvey}")
-	@ResponseStatus(code= HttpStatus.CREATED)
 	public void removeQuestionToSuervey(@PathVariable Integer idQuestion, @PathVariable Integer idSurvey) throws NotFoundException {
 		questionService.removeSurvey(idQuestion,idSurvey);
 	}
 		
 	
 	@DeleteMapping("/{idQuestion}")
-	@ResponseStatus(code=HttpStatus.OK)
 	public void delete(@PathVariable Integer idQuestion) throws NotFoundException {
 		questionService.delete(idQuestion);
 	}

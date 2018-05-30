@@ -1,5 +1,8 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,6 +17,7 @@ import com.atsistemas.EncuestaProj.dao.DificultyDAO;
 import com.atsistemas.EncuestaProj.dto.DificultyDTO;
 import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.model.Dificulty;
+import com.atsistemas.EncuestaProj.model.Question;
 import com.atsistemas.EncuestaProj.service.DificultyService;
 
 @Service
@@ -72,10 +76,6 @@ public class DificultyServiceImpl implements DificultyService, InitializingBean 
 		else
 			throw new DificultyNotFoundException("Dificulty no encontrada name('"+ name +"')");
 	}
-	
-	
-
-
 
 
 	@Override
@@ -90,6 +90,22 @@ public class DificultyServiceImpl implements DificultyService, InitializingBean 
 		if (!dificultyDAO.findOneByName("dificil").isPresent()) { dificultyDAO.save(new Dificulty("dificil")); }		
 	}
 
+	@Override
+	public Set<Question> findQuestionsByDificulty(Pageable page,Integer idDificulty) throws DificultyNotFoundException {
+		Optional<Dificulty> dificultySearch = dificultyDAO.findById(idDificulty);
+		if (dificultySearch.isPresent())
+			return subSet(page,dificultySearch.get().getQuestions());
+		else
+			throw new DificultyNotFoundException("Dificulty no encontrada idDificulty('"+ idDificulty +"')");
+	}
+
+	private Set<Question> subSet (Pageable page, Set<Question> inicial) {
+		List<Question> list = new ArrayList<>(inicial);
+		Integer posicionInicial = page.getPageSize()*page.getPageNumber();
+		Integer posicionFinal = (list.size() > (posicionInicial+page.getPageSize()))?posicionInicial+page.getPageSize()-1:list.size()-1;
+		return new LinkedHashSet<>(list.subList(posicionInicial, posicionFinal));
+		
+	}
 
 
 }

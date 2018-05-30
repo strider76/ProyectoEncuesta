@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.atsistemas.EncuestaProj.dto.QuestionDTOPost;
 import com.atsistemas.EncuestaProj.dto.TagDTO;
 import com.atsistemas.EncuestaProj.dto.TagDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
+import com.atsistemas.EncuestaProj.mapper.QuestionMapper;
 import com.atsistemas.EncuestaProj.mapper.TagMapper;
 import com.atsistemas.EncuestaProj.service.TagService;
 
@@ -33,8 +35,10 @@ public class TagController {
 	@Autowired
 	TagMapper tagMapper;
 	
+	@Autowired
+	QuestionMapper questionMapper;
+	
 	@GetMapping
-	@ResponseStatus(code=HttpStatus.OK)
 	public Set<TagDTOPost> findAll(@RequestParam(defaultValue="0", required=false) Integer page,
 									@RequestParam(defaultValue="10", required=false) Integer size) {
 		return tagMapper.tagsGetDaoToDto(tagService.findAll(PageRequest.of(page, size)));
@@ -42,27 +46,30 @@ public class TagController {
 	
 	
 	@GetMapping("/{idTag}")
-	@ResponseStatus(code=HttpStatus.OK)
 	public TagDTOPost findById(@PathVariable Integer idTag) throws NotFoundException {
 		return tagMapper.tagDaoToDto(tagService.findById(idTag));
 	}
 	
 	@GetMapping("/search")
-	@ResponseStatus(code=HttpStatus.OK)
 	public TagDTOPost findByName(@RequestParam(defaultValue="",required=false) String name) throws TagNotFoundException{
 		return tagMapper.tagDaoToDto(tagService.findByName(name));
 	}
 	
+	@GetMapping("/{idTag}/question")
+	public Set<QuestionDTOPost> findQuestionByTag (@PathVariable Integer idTag,
+												   @RequestParam(defaultValue="0",required=false) Integer page,
+												   @RequestParam(defaultValue="10", required=false) Integer size) throws TagNotFoundException {
+		return questionMapper.QuestionGetDaoToDto(tagService.findQuestionByTag(PageRequest.of(page, size),idTag));
+	}
 	
 	@PostMapping
 	@ResponseStatus(code=HttpStatus.CREATED)
 	public TagDTOPost create(@RequestBody TagDTO tagDTO) throws NotFoundException {
-		return tagMapper.tagDaoToDto(tagService.create(tagMapper.tagDtoToDao(tagDTO)));
+		return  tagMapper.tagDaoToDto(tagService.create(tagMapper.tagDtoToDao(tagDTO)));
 	}
 	
 	
 	@DeleteMapping("/{idTag}")
-	@ResponseStatus(code=HttpStatus.OK)
 	public void delete(@PathVariable Integer idTag) throws NotFoundException {
 		tagService.delete(idTag);
 	}
@@ -81,7 +88,6 @@ public class TagController {
 	}
 	
 	@DeleteMapping("/{idTag}/survey/{idSurvey}")
-	@ResponseStatus(code=HttpStatus.CREATED)
 	public void removeTagToSurvey(@PathVariable Integer idTag, @PathVariable Integer idSurvey) throws NotFoundException {
 		tagService.removeSurvey(idTag, idSurvey);
 	}	

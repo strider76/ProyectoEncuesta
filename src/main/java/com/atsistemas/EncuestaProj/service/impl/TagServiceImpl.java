@@ -1,5 +1,8 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,6 +16,7 @@ import com.atsistemas.EncuestaProj.dao.TagDAO;
 import com.atsistemas.EncuestaProj.dto.TagDTO;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
+import com.atsistemas.EncuestaProj.model.Question;
 import com.atsistemas.EncuestaProj.model.Tag;
 import com.atsistemas.EncuestaProj.service.SurveyService;
 import com.atsistemas.EncuestaProj.service.TagService;
@@ -115,7 +119,7 @@ public class TagServiceImpl implements TagService {
 		Tag tag3 = new Tag();
 		
 		tag1.setName("jpa");
-		tag2.setName("spring");
+		tag2.setName("mongodb");
 		tag3.setName("hibernate");
 		
 		tagDAO.save(tag1);
@@ -123,7 +127,25 @@ public class TagServiceImpl implements TagService {
 		tagDAO.save(tag3);
 		
 	}
+
+	@Override
+	public Set<Question> findQuestionByTag(PageRequest page, Integer idTag) throws TagNotFoundException {
+		Optional<Tag> tagSearch = tagDAO.findById(idTag);
+		if (tagSearch.isPresent())
+			return subSet(page,tagSearch.get().getPreguntas());
+		else
+			throw new TagNotFoundException("Tag no encontrada idTag('"+ idTag +"')");
+	}
 	
+
+	private Set<Question> subSet (Pageable page, Set<Question> inicial) {
+		List<Question> list = new ArrayList<>(inicial);
+		Integer posicionInicial = page.getPageSize()*page.getPageNumber();
+		Integer posicionFinal = (list.size() > (posicionInicial+page.getPageSize()))?posicionInicial+page.getPageSize()-1:list.size()-1;
+		return new LinkedHashSet<>(list.subList(posicionInicial, posicionFinal));
+		
+	}
+
 	
 
 }

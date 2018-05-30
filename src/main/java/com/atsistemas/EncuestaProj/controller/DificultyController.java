@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.atsistemas.EncuestaProj.dto.DificultyDTO;
 import com.atsistemas.EncuestaProj.dto.DificultyDTOPost;
+import com.atsistemas.EncuestaProj.dto.QuestionDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.NotFoundException;
 import com.atsistemas.EncuestaProj.mapper.DificultyMapper;
+import com.atsistemas.EncuestaProj.mapper.QuestionMapper;
 import com.atsistemas.EncuestaProj.service.DificultyService;
 
 @RestController
@@ -33,22 +35,28 @@ public class DificultyController {
 	@Autowired
 	DificultyMapper dificultyMapper;
 	
+	@Autowired
+	QuestionMapper questionMapper;
+	
 	@GetMapping
-	@ResponseStatus(code=HttpStatus.OK)
 	public Set<DificultyDTOPost> findAll(@RequestParam(defaultValue="0",required=false) Integer page,
 										 @RequestParam(defaultValue="10",required=false) Integer size) {
 		return dificultyMapper.dificultyGetsDaoToDto(dificultyService.findAll(PageRequest.of(page, size)));
 	}
 	
-	@GetMapping("/{idDificultad}")
-	@ResponseStatus(code=HttpStatus.OK)
-	public DificultyDTOPost findById(@PathVariable Integer idDificultad) throws NotFoundException {
-		return dificultyMapper.dificultyDaoToDto(dificultyService.findById(idDificultad));
+	@GetMapping("/{idDificulty}")
+	public DificultyDTOPost findById(@PathVariable Integer idDificulty) throws NotFoundException {
+		return dificultyMapper.dificultyDaoToDto(dificultyService.findById(idDificulty));
 	}
 	
+	@GetMapping("/{idDificulty}/question")
+	public Set<QuestionDTOPost> findQuestionByDificulty ( @PathVariable Integer idDificulty,
+														@RequestParam(defaultValue="0", required=false) Integer page,
+														@RequestParam(defaultValue="10", required=false) Integer size) throws DificultyNotFoundException {
+		return questionMapper.QuestionGetDaoToDto(dificultyService.findQuestionsByDificulty(PageRequest.of(page, size),idDificulty));
+	}
 	
 	@GetMapping("/name")
-	@ResponseStatus(code=HttpStatus.OK)
 	public DificultyDTOPost findByName(@RequestParam(defaultValue="",required=true) String name) throws DificultyNotFoundException {
 		return dificultyMapper.dificultyDaoToDto(dificultyService.findByName(name));
 	}
@@ -62,7 +70,6 @@ public class DificultyController {
 	}
 	
 	@DeleteMapping("/{idDificulty}")
-	@ResponseStatus(code=HttpStatus.ACCEPTED)
 	public void delete(@PathVariable Integer idDificulty) throws NotFoundException {
 		dificultyService.delete(idDificulty);
 	}

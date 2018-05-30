@@ -41,7 +41,6 @@ public class CourseController {
 	CourseMapper courseMapper;
 	
 	@GetMapping
-	@ResponseStatus(code=HttpStatus.ACCEPTED)
 	public Set<CourseDTOPost> findAll(@RequestParam(defaultValue="0",required=false) Integer page,
 									  @RequestParam(defaultValue="10", required=false) Integer size){
 		
@@ -55,7 +54,6 @@ public class CourseController {
 	}
 	
 	@DeleteMapping("/{idCourse}")
-	@ResponseStatus(code=HttpStatus.OK)
 	public void delete(@PathVariable Integer idCourse) throws NotFoundException {
 		courseService.delete(idCourse);
 	}
@@ -67,7 +65,6 @@ public class CourseController {
 	}
 	
 	@PutMapping("/{idCourse}")
-	@ResponseStatus(code=HttpStatus.OK)
 	public void update(@PathVariable Integer idCourse, @RequestBody CourseDTO courseModified) throws NotFoundException {
 		courseService.update(idCourse, courseModified);
 	}
@@ -79,13 +76,11 @@ public class CourseController {
 	}
 	
 	@DeleteMapping("/{idCourse}/user/{idUser}")
-	@ResponseStatus(code=HttpStatus.ACCEPTED)
 	public void deleteUserToCourse(@PathVariable Integer idCourse, @PathVariable Integer idUser) throws NotFoundException {
 		courseService.deleteUserCourse(idUser, idCourse);
 	}	
 	
 	@GetMapping("/{idCourse}/user")
-	@ResponseStatus(code=HttpStatus.ACCEPTED)
 	public Set<UserDTOPost> getUsersCourse(@PathVariable Integer idCourse) throws NotFoundException {
 		return userMapper.userGetDaoToDto(courseService.getAllUserCourse(idCourse));
 	}

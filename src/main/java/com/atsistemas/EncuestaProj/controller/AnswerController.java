@@ -38,7 +38,6 @@ public class AnswerController {
 	}
 	
 	@GetMapping("/{idAnswer}")
-	@ResponseStatus(code=HttpStatus.OK)
 	public AnswerDTO findById(@PathVariable Integer idAnswer) throws NotFoundException {
 		return answerMapper.answerDaoToDto(answerService.findById(idAnswer));
 	}
@@ -50,13 +49,11 @@ public class AnswerController {
 	}
 	
 	@PutMapping("/{idAnswer}")
-	@ResponseStatus(code=HttpStatus.OK)
 	public void update(@PathVariable Integer idAnswer, @RequestBody AnswerDTOPost answerDTO) throws NotFoundException {
 		answerService.update(idAnswer, answerDTO);
 	}
 	
 	@GetMapping("/question/{idQuestion}")
-	@ResponseStatus(code=HttpStatus.OK)
 	public Set<AnswerDTOPost> findAllByQuestion(@PathVariable Integer idQuestion) throws NotFoundException {
 		return answerMapper.AnswerGetsDaoToDto(answerService.findAllByQuestion(idQuestion));
 	}
