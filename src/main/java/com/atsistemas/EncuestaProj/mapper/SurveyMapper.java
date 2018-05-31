@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.mapper;
 
-import java.util.Set;
+import java.util.List;
 
 import com.atsistemas.EncuestaProj.dto.SurveyDTO;
 import com.atsistemas.EncuestaProj.dto.SurveyDTOPost;
@@ -12,7 +12,7 @@ public interface SurveyMapper {
 
 	Survey surveyDtoToDao(SurveyDTO survey) throws CourseNotfoundException, NotFoundException;
 	SurveyDTOPost surveyDaoToDto(Survey survey);
-	Set<SurveyDTOPost> surveyGetDaoToDto(Set<Survey> surveys);
-	Set<Survey> surveyGetDtoToDao(Set<SurveyDTO> surveys) throws CourseNotfoundException, NotFoundException;
+	List<SurveyDTOPost> surveyGetDaoToDto(List<Survey> surveys);
+	List<Survey> surveyGetDtoToDao(List<SurveyDTO> surveys) throws CourseNotfoundException, NotFoundException;
 	
 }

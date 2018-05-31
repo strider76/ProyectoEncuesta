@@ -1,10 +1,8 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.InitializingBean;
@@ -64,8 +62,8 @@ public class DificultyServiceImpl implements DificultyService, InitializingBean 
 	}
 
 	@Override
-	public Set<Dificulty> findAll(Pageable pagina) {
-		return dificultyDAO.findAll(PageRequest.of(pagina.getPageNumber(), pagina.getPageSize())).stream().collect(Collectors.toSet());
+	public List<Dificulty> findAll(Pageable pagina) {
+		return dificultyDAO.findAll(PageRequest.of(pagina.getPageNumber(), pagina.getPageSize())).stream().collect(Collectors.toList());
 	}
 
 	@Override
@@ -91,7 +89,7 @@ public class DificultyServiceImpl implements DificultyService, InitializingBean 
 	}
 
 	@Override
-	public Set<Question> findQuestionsByDificulty(Pageable page,Integer idDificulty) throws DificultyNotFoundException {
+	public List<Question> findQuestionsByDificulty(Pageable page,Integer idDificulty) throws DificultyNotFoundException {
 		Optional<Dificulty> dificultySearch = dificultyDAO.findById(idDificulty);
 		if (dificultySearch.isPresent())
 			return subSet(page,dificultySearch.get().getQuestions());
@@ -99,11 +97,11 @@ public class DificultyServiceImpl implements DificultyService, InitializingBean 
 			throw new DificultyNotFoundException("Dificulty no encontrada idDificulty('"+ idDificulty +"')");
 	}
 
-	private Set<Question> subSet (Pageable page, Set<Question> inicial) {
+	private List<Question> subSet (Pageable page, List<Question> inicial) {
 		List<Question> list = new ArrayList<>(inicial);
 		Integer posicionInicial = page.getPageSize()*page.getPageNumber();
 		Integer posicionFinal = (list.size() > (posicionInicial+page.getPageSize()))?posicionInicial+page.getPageSize()-1:list.size()-1;
-		return new LinkedHashSet<>(list.subList(posicionInicial, posicionFinal));
+		return list.subList(posicionInicial, posicionFinal);
 		
 	}
 

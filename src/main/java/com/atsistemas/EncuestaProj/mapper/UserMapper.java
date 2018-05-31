@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.mapper;
 
 
-import java.util.Set;
+import java.util.List;
 
 import com.atsistemas.EncuestaProj.dto.UserDTO;
 import com.atsistemas.EncuestaProj.dto.UserDTOPost;
@@ -12,7 +12,7 @@ public interface UserMapper {
 	User userDtoToDao(UserDTO user);
 	UserDTOPost userDaoToDto(User user);
 	
-	Set<User> userGetDtoToDao(Set<UserDTO> users);
-	Set<UserDTOPost> userGetDaoToDto(Set<User> users);
+	List<User> userGetDtoToDao(List<UserDTO> users);
+	List<UserDTOPost> userGetDaoToDto(List<User> users);
 	
 }

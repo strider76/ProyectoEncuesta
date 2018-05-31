@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.service;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +17,8 @@ public interface QuestionService extends AbstractService<Question, QuestionDTO, 
 
 	void assignSurvey(Integer idQuestion, Integer idSurvey) throws SurveyNotFoundException, NotFoundException;
 	void removeSurvey(Integer idQuestion, Integer idSurvey) throws SurveyNotFoundException, NotFoundException;
-	Set<Answer> findAnswerByQuestion(Pageable page, Integer idQuestion) throws QuestionNotFoundException;
-	Set<Question> findQuestionByTag(Set<Tag> tags);
+	List<Answer> findAnswerByQuestion(Pageable page, Integer idQuestion) throws QuestionNotFoundException;
+	List<Question> findQuestionByTag(List<Tag> tags);
 	
 	
 }

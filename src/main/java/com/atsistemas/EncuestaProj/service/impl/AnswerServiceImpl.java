@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +50,8 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 
 	@Override
-	public Set<Answer> findAll(Pageable page) {
-		return answerDAO.findAll(page).stream().collect(Collectors.toSet());
+	public List<Answer> findAll(Pageable page) {
+		return answerDAO.findAll(page).stream().collect(Collectors.toList());
 	}
 
 	@Override
@@ -84,13 +84,13 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 
 	@Override
-	public Set<Answer> findAllByQuestion(Integer idQuestion) throws NotFoundException {
+	public List<Answer> findAllByQuestion(Integer idQuestion) throws NotFoundException {
 		return answerDAO.findAllByQuestion(questionService.findById(idQuestion));
 			
 	}
 	
 	private void answerToFalse (Question question) {
-		Set<Answer> answersQuestions = answerDAO.findAllByQuestion(question);
+		List<Answer> answersQuestions = answerDAO.findAllByQuestion(question);
 		for (Answer answer : answersQuestions) 
 			if (answer.getEsCorrecta()){
 				answer.setEsCorrecta(false);

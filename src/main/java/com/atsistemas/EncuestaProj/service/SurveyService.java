@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.service;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
@@ -17,8 +17,8 @@ public interface SurveyService extends AbstractService<Survey, SurveyDTO, Intege
 
 	
 	void generateRamdomQuestions(Integer idSurvey) throws SurveyNotFoundException;
-	Set<Question> findQuestionBySurvey(Pageable page, Integer idSurvey) throws SurveyNotFoundException;
-	Set<Tag> findTagBySurvey(Pageable page, Integer idSurvey) throws SurveyNotFoundException;
+	List<Question> findQuestionBySurvey(Pageable page, Integer idSurvey) throws SurveyNotFoundException;
+	List<Tag> findTagBySurvey(Pageable page, Integer idSurvey) throws SurveyNotFoundException;
 	void addTagToSurvey(Integer idSurvey, Integer idTag) throws NotFoundException;
 	void removeTagToSurvey(Integer idSurvey, Integer idTag) throws NotFoundException;
 	void addQuestionToSurvey(Integer idSurvey, Integer idQuestion) throws NotFoundException, SurveyExcedQuestions, SurveyQuestionRepeatedException;

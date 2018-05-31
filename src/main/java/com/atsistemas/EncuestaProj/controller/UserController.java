@@ -1,7 +1,7 @@
  package com.atsistemas.EncuestaProj.controller;
 
 
-import java.util.Set;
+import java.util.List;
 
 
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class UserController {
 	private final static Logger LOG = LoggerFactory.getLogger(UserController.class);
 	
 	@GetMapping
-	public Set<UserDTOPost> findAll(@RequestParam(defaultValue="0",required=false) Integer page,
+	public List<UserDTOPost> findAll(@RequestParam(defaultValue="0",required=false) Integer page,
 									@RequestParam(defaultValue="10", required=false) Integer size) {
 		LOG.info("UserController findAll --Param page=" + page +" , size=" + size);
 		return userMapper.userGetDaoToDto(userService.findAll(PageRequest.of(page, size)));

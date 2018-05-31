@@ -1,6 +1,7 @@
 package com.atsistemas.EncuestaProj.mapper;
 
-import java.util.Set;
+import java.util.List;
+
 
 import com.atsistemas.EncuestaProj.dto.CourseDTO;
 import com.atsistemas.EncuestaProj.dto.CourseDTOPost;
@@ -10,7 +11,7 @@ public interface CourseMapper {
 
 	public Course courseDtoToDao(CourseDTO courseDTO);
 	public CourseDTOPost  courseDaoToDto(Course course);
-	public Set<Course> courseGetDtoToDao(Set<CourseDTO> courseDTO);
-	public Set<CourseDTOPost> courseGetDaoToDto(Set<Course> courses);
+	public List<Course> courseGetDtoToDao(List<CourseDTO> courseDTO);
+	public List<CourseDTOPost> courseGetDaoToDto(List<Course> courses);
 	
 }

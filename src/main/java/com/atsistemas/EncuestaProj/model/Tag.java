@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,10 +31,10 @@ public class Tag {
 	
 	
 	@ManyToMany(fetch=FetchType.LAZY,mappedBy="tags")
-	private Set<Survey> cuestionarios;
+	private List<Survey> cuestionarios;
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="tag")
-	private Set<Question> preguntas;
+	private List<Question> preguntas;
 
 	
 	public Tag(String name) {

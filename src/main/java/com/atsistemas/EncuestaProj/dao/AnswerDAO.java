@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.dao;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -12,6 +12,6 @@ import com.atsistemas.EncuestaProj.model.Question;
 @Repository
 public interface AnswerDAO extends PagingAndSortingRepository<Answer, Integer> {
 
-	Set<Answer> findAllByQuestion(Question question);
+	List<Answer> findAllByQuestion(Question question);
 	
 }

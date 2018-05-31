@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.mapper.impl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +30,16 @@ public class UserMapperImpl implements UserMapper {
 	}
 
 	@Override
-	public Set<User> userGetDtoToDao(Set<UserDTO> users) {
-		Set<User> result = new HashSet<>();
+	public List<User> userGetDtoToDao(List<UserDTO> users) {
+		List<User> result = new ArrayList<>();
 		for (UserDTO userDTO : users) 
 			result.add(mapper.map(userDTO, User.class));
 		return result;
 	}
 
 	@Override
-	public Set<UserDTOPost> userGetDaoToDto(Set<User> users) {
-		Set<UserDTOPost> result = new HashSet<>();
+	public List<UserDTOPost> userGetDaoToDto(List<User> users) {
+		List<UserDTOPost> result = new ArrayList<>();
 		for (User userDAO : users) 
 			result.add(mapper.map(userDAO, UserDTOPost.class));
 		return result;

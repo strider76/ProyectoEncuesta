@@ -1,10 +1,8 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -53,8 +51,8 @@ public class SurveyServiceImpl implements SurveyService {
 	}
 
 	@Override
-	public Set<Survey> findAll(Pageable pagina) {
-		return surveyDAO.findAll(pagina).stream().collect(Collectors.toSet());
+	public List<Survey> findAll(Pageable pagina) {
+		return surveyDAO.findAll(pagina).stream().collect(Collectors.toList());
 	}
 
 	@Override
@@ -111,7 +109,7 @@ public class SurveyServiceImpl implements SurveyService {
 
 
 	@Override
-	public Set<Question> findQuestionBySurvey(Pageable page, Integer idSurvey) throws SurveyNotFoundException {
+	public List<Question> findQuestionBySurvey(Pageable page, Integer idSurvey) throws SurveyNotFoundException {
 		Optional<Survey> surveySearch = surveyDAO.findById(idSurvey);
 		if (surveySearch.isPresent())
 			return subSetQuestion(page,surveySearch.get().getPreguntas());
@@ -120,16 +118,16 @@ public class SurveyServiceImpl implements SurveyService {
 	}
 	
 
-	private Set<Question> subSetQuestion (Pageable page, Set<Question> inicial) {
+	private List<Question> subSetQuestion (Pageable page, List<Question> inicial) {
 		List<Question> list = new ArrayList<>(inicial);
 		Integer posicionInicial = page.getPageSize()*page.getPageNumber();
 		Integer posicionFinal = (list.size() > (posicionInicial+page.getPageSize()))?posicionInicial+page.getPageSize()-1:list.size();
-		return new LinkedHashSet<>(list.subList(posicionInicial, posicionFinal));
+		return list.subList(posicionInicial, posicionFinal);
 		
 	}
 
 	@Override
-	public Set<Tag> findTagBySurvey(Pageable page, Integer idSurvey) throws SurveyNotFoundException {
+	public List<Tag> findTagBySurvey(Pageable page, Integer idSurvey) throws SurveyNotFoundException {
 		Optional<Survey> surveySearch = surveyDAO.findById(idSurvey);
 		if (surveySearch.isPresent())
 			return subSetTag(page,surveySearch.get().getTags());
@@ -137,11 +135,11 @@ public class SurveyServiceImpl implements SurveyService {
 			throw new SurveyNotFoundException("Survey no encontrada idSurvey('"+ idSurvey +"')");
 	}
 	
-	private Set<Tag> subSetTag (Pageable page, Set<Tag> inicial) {
+	private List<Tag> subSetTag (Pageable page, List<Tag> inicial) {
 		List<Tag> list = new ArrayList<>(inicial);
 		Integer posicionInicial = page.getPageSize()*page.getPageNumber();
 		Integer posicionFinal = (list.size() > (posicionInicial+page.getPageSize()))?posicionInicial+page.getPageSize()-1:list.size();
-		return new LinkedHashSet<>(list.subList(posicionInicial, posicionFinal));
+		return list.subList(posicionInicial, posicionFinal);
 		
 	}
 

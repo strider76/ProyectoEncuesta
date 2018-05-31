@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.controller;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +39,7 @@ public class TagController {
 	QuestionMapper questionMapper;
 	
 	@GetMapping
-	public Set<TagDTOPost> findAll(@RequestParam(defaultValue="0", required=false) Integer page,
+	public List<TagDTOPost> findAll(@RequestParam(defaultValue="0", required=false) Integer page,
 									@RequestParam(defaultValue="10", required=false) Integer size) {
 		return tagMapper.tagsGetDaoToDto(tagService.findAll(PageRequest.of(page, size)));
 	}
@@ -56,7 +56,7 @@ public class TagController {
 	}
 	
 	@GetMapping("/{idTag}/question")
-	public Set<QuestionDTOPost> findQuestionByTag (@PathVariable Integer idTag,
+	public List<QuestionDTOPost> findQuestionByTag (@PathVariable Integer idTag,
 												   @RequestParam(defaultValue="0",required=false) Integer page,
 												   @RequestParam(defaultValue="10", required=false) Integer size) throws TagNotFoundException {
 		return questionMapper.QuestionGetDaoToDto(tagService.findQuestionByTag(PageRequest.of(page, size),idTag));

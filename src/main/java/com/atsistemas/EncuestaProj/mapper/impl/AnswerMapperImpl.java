@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.mapper.impl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +38,16 @@ public class AnswerMapperImpl implements AnswerMapper {
 	}
 
 	@Override
-	public Set<Answer> AnswerGetsDtoToDao(Set<AnswerDTOPost> answers) {
-		Set<Answer> answersList = new HashSet<>();
+	public List<Answer> AnswerGetsDtoToDao(List<AnswerDTOPost> answers) {
+		List<Answer> answersList = new ArrayList<>();
 		for (AnswerDTOPost answer : answers) 
 			answersList.add(answerMapper.map(answer, Answer.class));
 		return answersList;
 	}
 
 	@Override
-	public Set<AnswerDTOPost> AnswerGetsDaoToDto(Set<Answer> answers) {
-		Set<AnswerDTOPost> answerList = new HashSet<>();
+	public List<AnswerDTOPost> AnswerGetsDaoToDto(List<Answer> answers) {
+		List<AnswerDTOPost> answerList = new ArrayList<>();
 		for (Answer curAnswer : answers) 
 			answerList.add(answerDaoToDto(curAnswer));
 		return answerList;

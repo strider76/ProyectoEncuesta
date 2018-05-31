@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.service;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +19,6 @@ public interface TagService extends AbstractService<Tag, TagDTO, Integer>, Initi
 	void asignSurvey(Integer idTag, Integer idSurvey) throws SurveyNotFoundException, NotFoundException;
 	void removeSurvey(Integer idTag, Integer idSurvey) throws SurveyNotFoundException, NotFoundException;
 
-	Set<Question> findQuestionByTag(PageRequest of, Integer idTag) throws TagNotFoundException;
+	List<Question> findQuestionByTag(PageRequest of, Integer idTag) throws TagNotFoundException;
 	
 }

@@ -1,7 +1,6 @@
 package com.atsistemas.EncuestaProj.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,7 +33,7 @@ public class Question {
 	private String name;
 	
 	@ManyToMany(fetch=FetchType.LAZY, mappedBy="preguntas")
-	private Set<Survey> cuestionarios;
+	private List<Survey> cuestionarios;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_tag")
@@ -46,7 +45,7 @@ public class Question {
 	
 	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL, mappedBy = "question")
 	@Size(min=0,max=4)
-	private Set<Answer> answers = new HashSet<>();
+	private List<Answer> answers;
 
 	@Override
 	public String toString() {

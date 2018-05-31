@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.dao;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +17,6 @@ public interface QuestionDAO extends PagingAndSortingRepository<Question, Intege
 
 	Page<Question> findAllByTag(Pageable arg0,Tag tag);
 	Page<Question> findAllByDificulty(Pageable arg0,Dificulty tag);
-	Set<Question>  findAllByTagIn(Set<Tag> tags);
+	List<Question>  findAllByTagIn(List<Tag> tags);
 	Page<Question> findAllByCuestionarios(Pageable arg, Survey survey);
 }

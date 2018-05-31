@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.service;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
@@ -13,7 +13,7 @@ public interface AbstractService<D,T,ID extends Serializable> {
 	
 	D findById(ID id) throws NotFoundException;
 	
-	Set<D> findAll(Pageable pagina);
+	List<D> findAll(Pageable pagina);
 	
 	void update(ID id,T dto) throws NotFoundException;
 	

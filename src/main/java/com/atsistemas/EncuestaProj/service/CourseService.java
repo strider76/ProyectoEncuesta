@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.service;
 
-import java.util.Set;
+import java.util.List;
 
 import com.atsistemas.EncuestaProj.dto.CourseDTO;
 import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
@@ -14,7 +14,7 @@ public interface CourseService extends AbstractService<Course, CourseDTO, Intege
 
 	public void addUserCourse(Integer idUser, Integer course) throws UserNotFoundException, NotFoundException;
 	public void deleteUserCourse(Integer user, Integer course) throws UserNotFoundException, NotFoundException;
-	public Set<User> getAllUserCourse (Integer idCourse) throws NotFoundException;
-	public Set<Survey> getAllSurveyCourse(Integer idCourse) throws CourseNotfoundException;
+	public List<User> getAllUserCourse (Integer idCourse) throws NotFoundException;
+	public List<Survey> getAllSurveyCourse(Integer idCourse) throws CourseNotfoundException;
 	
 }

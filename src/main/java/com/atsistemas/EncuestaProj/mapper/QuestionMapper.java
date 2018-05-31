@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.mapper;
 
-import java.util.Set;
+import java.util.List;
 
 import com.atsistemas.EncuestaProj.dto.QuestionDTO;
 import com.atsistemas.EncuestaProj.dto.QuestionDTOPost;
@@ -13,7 +13,7 @@ public interface QuestionMapper {
 
 	Question questionDtoToDao(QuestionDTO questionDto) throws DificultyNotFoundException, TagNotFoundException, NotFoundException;
 	QuestionDTOPost questionDaoToDto(Question question);
-	Set<Question> questionGetDtoToDao(Set<QuestionDTO> questions) throws DificultyNotFoundException, TagNotFoundException, NotFoundException;
-	Set<QuestionDTOPost> QuestionGetDaoToDto(Set<Question> questions);
+	List<Question> questionGetDtoToDao(List<QuestionDTO> questions) throws DificultyNotFoundException, TagNotFoundException, NotFoundException;
+	List<QuestionDTOPost> QuestionGetDaoToDto(List<Question> questions);
 	
 }

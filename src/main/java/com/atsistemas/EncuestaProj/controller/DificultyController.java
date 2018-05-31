@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.controller;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +39,7 @@ public class DificultyController {
 	QuestionMapper questionMapper;
 	
 	@GetMapping
-	public Set<DificultyDTOPost> findAll(@RequestParam(defaultValue="0",required=false) Integer page,
+	public List<DificultyDTOPost> findAll(@RequestParam(defaultValue="0",required=false) Integer page,
 										 @RequestParam(defaultValue="10",required=false) Integer size) {
 		return dificultyMapper.dificultyGetsDaoToDto(dificultyService.findAll(PageRequest.of(page, size)));
 	}
@@ -50,7 +50,7 @@ public class DificultyController {
 	}
 	
 	@GetMapping("/{idDificulty}/question")
-	public Set<QuestionDTOPost> findQuestionByDificulty ( @PathVariable Integer idDificulty,
+	public List<QuestionDTOPost> findQuestionByDificulty ( @PathVariable Integer idDificulty,
 														@RequestParam(defaultValue="0", required=false) Integer page,
 														@RequestParam(defaultValue="10", required=false) Integer size) throws DificultyNotFoundException {
 		return questionMapper.QuestionGetDaoToDto(dificultyService.findQuestionsByDificulty(PageRequest.of(page, size),idDificulty));

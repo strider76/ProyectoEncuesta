@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.controller;
 
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -47,7 +47,7 @@ public class CourseController {
 	SurveyMapper surveyMapper;
 	
 	@GetMapping
-	public Set<CourseDTOPost> findAll(@RequestParam(defaultValue="0",required=false) Integer page,
+	public List<CourseDTOPost> findAll(@RequestParam(defaultValue="0",required=false) Integer page,
 									  @RequestParam(defaultValue="10", required=false) Integer size){
 		
 		return courseMapper.courseGetDaoToDto(courseService.findAll(PageRequest.of(page, size)));
@@ -87,12 +87,12 @@ public class CourseController {
 	}	
 	
 	@GetMapping("/{idCourse}/user")
-	public Set<UserDTOPost> getUsersCourse(@PathVariable Integer idCourse) throws NotFoundException {
+	public List<UserDTOPost> getUsersCourse(@PathVariable Integer idCourse) throws NotFoundException {
 		return userMapper.userGetDaoToDto(courseService.getAllUserCourse(idCourse));
 	}
 	
 	@GetMapping("/{idCourse}/survey")
-	public Set<SurveyDTOPost> getSurveyCourse(@PathVariable Integer idCourse) throws CourseNotfoundException {
+	public List<SurveyDTOPost> getSurveyCourse(@PathVariable Integer idCourse) throws CourseNotfoundException {
 		return surveyMapper.surveyGetDaoToDto(courseService.getAllSurveyCourse(idCourse));
 	}
 	

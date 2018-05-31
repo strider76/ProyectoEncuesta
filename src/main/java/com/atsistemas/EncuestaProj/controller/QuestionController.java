@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.controller;
 
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +46,7 @@ public class QuestionController {
 	}
 	
 	@GetMapping
-	public Set<QuestionDTOPost> findAll(@RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
+	public List<QuestionDTOPost> findAll(@RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
 										@RequestParam(defaultValue="10", required=false,name="size") Integer pageSize) {
 		return questionMapper.QuestionGetDaoToDto(questionService.findAll(PageRequest.of(pageNumber, pageSize)));
 	}
@@ -54,7 +54,7 @@ public class QuestionController {
 	
 
 	@GetMapping("/{idQuestion}/answer")
-	public Set<AnswerDTOPost> findAnswerByQuestion(@PathVariable Integer idQuestion,
+	public List<AnswerDTOPost> findAnswerByQuestion(@PathVariable Integer idQuestion,
 													 @RequestParam(defaultValue="0",required=false, name="page") Integer pageNumber,
 													 @RequestParam(defaultValue="10",required=false,name="size") Integer pageSize) throws QuestionNotFoundException {
 		return answerMapper.AnswerGetsDaoToDto(questionService.findAnswerByQuestion(PageRequest.of(pageNumber, pageSize),idQuestion));

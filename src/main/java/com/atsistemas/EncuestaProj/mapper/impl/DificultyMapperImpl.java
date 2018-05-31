@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.mapper.impl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +29,17 @@ public class DificultyMapperImpl implements DificultyMapper {
 	}
 
 	@Override
-	public Set<Dificulty> dificultyGetsDtoToDao(Set<DificultyDTO> dificultiesDTO) {
-		Set<Dificulty> dificulties = new HashSet<>();
+	public List<Dificulty> dificultyGetsDtoToDao(List<DificultyDTO> dificultiesDTO) {
+		List<Dificulty> dificulties = new ArrayList<>();
 		for (DificultyDTO dificulty : dificultiesDTO) 
 			dificulties.add(dificultyDtoToDao(dificulty));
 		return dificulties;
 	}
 
 	@Override
-	public Set<DificultyDTOPost> dificultyGetsDaoToDto(Set<Dificulty> dificulties) {
+	public List<DificultyDTOPost> dificultyGetsDaoToDto(List<Dificulty> dificulties) {
 		
-		Set<DificultyDTOPost> dificultyList = new HashSet<>();
+		List<DificultyDTOPost> dificultyList = new ArrayList<>();
 		for (Dificulty dificulty : dificulties) 
 			dificultyList.add(dificultyDaoToDto(dificulty));
 		return dificultyList;

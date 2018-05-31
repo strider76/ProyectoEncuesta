@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.service;
 
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
@@ -14,6 +14,6 @@ public interface DificultyService extends AbstractService<Dificulty, DificultyDT
 
 	Dificulty findByName(String name) throws DificultyNotFoundException;
 
-	Set<Question> findQuestionsByDificulty(Pageable page, Integer idDificulty) throws DificultyNotFoundException;
+	List<Question> findQuestionsByDificulty(Pageable page, Integer idDificulty) throws DificultyNotFoundException;
 	
 }

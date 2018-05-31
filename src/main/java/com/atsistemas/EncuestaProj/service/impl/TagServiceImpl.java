@@ -1,10 +1,8 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +44,10 @@ public class TagServiceImpl implements TagService {
 	}
 
 	@Override
-	public Set<Tag> findAll(Pageable pagina) {
+	public List<Tag> findAll(Pageable pagina) {
 		int pageNumber = pagina.getPageNumber();
 		int pageSize = pagina.getPageSize();
-		return tagDAO.findAll(PageRequest.of(pageNumber, pageSize)).stream().collect(Collectors.toSet());
+		return tagDAO.findAll(PageRequest.of(pageNumber, pageSize)).stream().collect(Collectors.toList());
 	}
 
 	@Override
@@ -129,7 +127,7 @@ public class TagServiceImpl implements TagService {
 	}
 
 	@Override
-	public Set<Question> findQuestionByTag(PageRequest page, Integer idTag) throws TagNotFoundException {
+	public List<Question> findQuestionByTag(PageRequest page, Integer idTag) throws TagNotFoundException {
 		Optional<Tag> tagSearch = tagDAO.findById(idTag);
 		if (tagSearch.isPresent())
 			return subSet(page,tagSearch.get().getPreguntas());
@@ -138,11 +136,11 @@ public class TagServiceImpl implements TagService {
 	}
 	
 
-	private Set<Question> subSet (Pageable page, Set<Question> inicial) {
+	private List<Question> subSet (Pageable page, List<Question> inicial) {
 		List<Question> list = new ArrayList<>(inicial);
 		Integer posicionInicial = page.getPageSize()*page.getPageNumber();
 		Integer posicionFinal = (list.size() > (posicionInicial+page.getPageSize()))?posicionInicial+page.getPageSize()-1:list.size()-1;
-		return new LinkedHashSet<>(list.subList(posicionInicial, posicionFinal));
+		return list.subList(posicionInicial, posicionFinal);
 		
 	}
 

@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.controller;
 
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,7 +54,7 @@ public class AnswerController {
 	}
 	
 	@GetMapping("/question/{idQuestion}")
-	public Set<AnswerDTOPost> findAllByQuestion(@PathVariable Integer idQuestion) throws NotFoundException {
+	public List<AnswerDTOPost> findAllByQuestion(@PathVariable Integer idQuestion) throws NotFoundException {
 		return answerMapper.AnswerGetsDaoToDto(answerService.findAllByQuestion(idQuestion));
 	}
 }

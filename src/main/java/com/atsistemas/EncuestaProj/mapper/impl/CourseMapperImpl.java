@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.mapper.impl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +29,16 @@ public class CourseMapperImpl implements CourseMapper {
 	}
 
 	@Override
-	public Set<Course> courseGetDtoToDao(Set<CourseDTO> courseDTO) {
-		Set<Course> courseList = new HashSet<>();
+	public List<Course> courseGetDtoToDao(List<CourseDTO> courseDTO) {
+		List<Course> courseList = new ArrayList<>();
 		for (CourseDTO course : courseDTO) 
 			courseList.add(courseDtoToDao(course));
 		return courseList;
 	}
 
 	@Override
-	public Set<CourseDTOPost> courseGetDaoToDto(Set<Course> courses) {
-		Set<CourseDTOPost> courseList = new HashSet<>();
+	public List<CourseDTOPost> courseGetDaoToDto(List<Course> courses) {
+		List<CourseDTOPost> courseList = new ArrayList<>();
 		for (Course curCourse : courses) 
 			courseList.add(courseDaoToDto(curCourse));
 		return courseList;

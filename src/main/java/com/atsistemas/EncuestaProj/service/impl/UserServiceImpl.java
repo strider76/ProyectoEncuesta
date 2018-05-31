@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -44,10 +44,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Set<User> findAll(Pageable pagina) {
+	public List<User> findAll(Pageable pagina) {
 		int numPagina = pagina.getPageNumber();
 		int sizePagina = pagina.getPageSize();
-		Set<User> listUser = userDAO.findAll(PageRequest.of(numPagina, sizePagina)).stream().collect(Collectors.toSet());
+		List<User> listUser = userDAO.findAll(PageRequest.of(numPagina, sizePagina)).stream().collect(Collectors.toList());
 		LOG.info("UserServiceImpl - findByAll(page=" + numPagina +",sizePagina=" + sizePagina +"): Total" + listUser.size());
 		return listUser;
 	}

@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.service.impl;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +43,10 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public Set<Course> findAll(Pageable pagina) {
+	public List<Course> findAll(Pageable pagina) {
 		int numElementos = pagina.getPageSize();
 		int numPagina = pagina.getPageNumber();
-		return courseDAO.findAll(PageRequest.of(numPagina, numElementos)).stream().collect(Collectors.toSet());
+		return courseDAO.findAll(PageRequest.of(numPagina, numElementos)).stream().collect(Collectors.toList());
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public Set<User> getAllUserCourse(Integer idCourse) throws NotFoundException {
+	public List<User> getAllUserCourse(Integer idCourse) throws NotFoundException {
 		Optional<Course> courseSearch = courseDAO.findById(idCourse);
 		if (courseSearch.isPresent()) {
 			return courseSearch.get().getUsers();
@@ -109,7 +109,7 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public Set<Survey> getAllSurveyCourse(Integer idCourse) throws CourseNotfoundException {
+	public List<Survey> getAllSurveyCourse(Integer idCourse) throws CourseNotfoundException {
 		Optional<Course> courseSearch = courseDAO.findById(idCourse);
 		if (courseSearch.isPresent())
 			return courseSearch.get().getCuestionarios();

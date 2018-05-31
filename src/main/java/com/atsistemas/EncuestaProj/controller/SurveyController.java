@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.controller;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -51,21 +51,21 @@ public class SurveyController {
 	}	
 
 	@GetMapping("/{idSurvey}/question")
-	public Set<QuestionDTOPost> findQuestionBySurvey (@PathVariable Integer idSurvey,
+	public List<QuestionDTOPost> findQuestionBySurvey (@PathVariable Integer idSurvey,
 			@RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
 			@RequestParam(defaultValue="10",required=false,name="size") Integer pageSize) throws SurveyNotFoundException  {
 		return  questionMapper.QuestionGetDaoToDto(surveyService.findQuestionBySurvey(PageRequest.of(pageNumber, pageSize),idSurvey));
 	}
 
 	@GetMapping("/{idSurvey}/tag")
-	public Set<TagDTOPost> findAllByTag(@PathVariable Integer idSurvey,
+	public List<TagDTOPost> findAllByTag(@PathVariable Integer idSurvey,
 			@RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
 			@RequestParam(defaultValue="10",required=false,name="size") Integer pageSize) throws NotFoundException {
 		return tagMapper.tagsGetDaoToDto(surveyService.findTagBySurvey(PageRequest.of(pageNumber, pageSize), idSurvey));
 	}
 	
 	@GetMapping
-	public Set<SurveyDTOPost> findAll(@RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
+	public List<SurveyDTOPost> findAll(@RequestParam(defaultValue="0",required=false,name="page") Integer pageNumber,
 								  	  @RequestParam(defaultValue="10",required=false,name="size") Integer pageSize) {
 		return surveyMapper.surveyGetDaoToDto(surveyService.findAll(PageRequest.of(pageNumber, pageSize)));
 	}

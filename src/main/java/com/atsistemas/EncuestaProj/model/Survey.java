@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,16 +43,16 @@ public class Survey {
 	@JoinTable(name="cuestionario_pregunta",
 				joinColumns=@JoinColumn(name="id_cuestionario"),
 				inverseJoinColumns=@JoinColumn(name="id_pregunta"))
-	private Set<Question> preguntas;
+	private List<Question> preguntas;
 	
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name="cuestionario_tag",
 				joinColumns=@JoinColumn(name="id_cuestionario"),
 				inverseJoinColumns=@JoinColumn(name="id_tag"))
-	private Set<Tag> tags;
+	private List<Tag> tags;
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="cuestionario")
-	private Set<Result> results;
+	private List<Result> results;
 
 	@Override
 	public String toString() {

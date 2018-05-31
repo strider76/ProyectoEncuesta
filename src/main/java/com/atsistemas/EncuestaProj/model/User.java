@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,10 +34,10 @@ public class User {
 	private String password;
 	
 	@ManyToMany(fetch= FetchType.LAZY, mappedBy = "users")
-	private Set<Course> courses;
+	private List<Course> courses;
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="user")
-	private Set<Result> results;
+	private List<Result> results;
 
 	@Override
 	public String toString() {

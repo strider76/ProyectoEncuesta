@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,7 +31,7 @@ public class Dificulty {
 	private String name;
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="dificulty")
-	private Set<Question> questions;
+	private List<Question> questions;
 
 	public Dificulty(String name){
 		this.name =name;

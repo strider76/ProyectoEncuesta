@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.mapper.impl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import com.atsistemas.EncuestaProj.mapper.TagMapper;
 import com.atsistemas.EncuestaProj.model.Tag;
 
 @Component
-public class TapMapperImpl implements TagMapper {
+public class TagMapperImpl implements TagMapper {
 
 	@Autowired
 	DozerBeanMapper tagMapper;
@@ -29,16 +29,16 @@ public class TapMapperImpl implements TagMapper {
 	}
 
 	@Override
-	public Set<Tag> tagsGetDtoToDao(Set<TagDTO> tagsDTO) {
-		Set<Tag> tagList = new HashSet<>();
+	public List<Tag> tagsGetDtoToDao(List<TagDTO> tagsDTO) {
+		List<Tag> tagList = new ArrayList<>();
 		for (TagDTO tagDTO : tagsDTO) 
 			tagList.add(tagDtoToDao(tagDTO));
 		return tagList;
 	}
 
 	@Override
-	public Set<TagDTOPost> tagsGetDaoToDto(Set<Tag> tags) {
-		Set<TagDTOPost> tagList = new HashSet<>();
+	public List<TagDTOPost> tagsGetDaoToDto(List<Tag> tags) {
+		List<TagDTOPost> tagList = new ArrayList<>();
 		for (Tag tag : tags) 
 			tagList.add(tagDaoToDto(tag));
 		return tagList;

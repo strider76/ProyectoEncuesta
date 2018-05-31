@@ -1,7 +1,7 @@
 package com.atsistemas.EncuestaProj.mapper.impl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +40,16 @@ public class SurveyMapperImpl implements SurveyMapper {
 	}
 
 	@Override
-	public Set<SurveyDTOPost> surveyGetDaoToDto(Set<Survey> surveys) {
-		Set<SurveyDTOPost> surveyRes = new HashSet<>();
+	public List<SurveyDTOPost> surveyGetDaoToDto(List<Survey> surveys) {
+		List<SurveyDTOPost> surveyRes = new ArrayList<>();
 		for (Survey survey : surveys)
 			surveyRes.add(surveyDaoToDto(survey));
 		return surveyRes;
 	}
 
 	@Override
-	public Set<Survey> surveyGetDtoToDao(Set<SurveyDTO> surveys) throws NotFoundException {
-		Set<Survey> surveyRes = new HashSet<>();
+	public List<Survey> surveyGetDtoToDao(List<SurveyDTO> surveys) throws NotFoundException {
+		List<Survey> surveyRes = new ArrayList<>();
 		for (SurveyDTO survey : surveys)
 			surveyRes.add(surveyDtoToDao(survey));
 		return surveyRes;

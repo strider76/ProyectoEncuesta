@@ -1,6 +1,6 @@
 package com.atsistemas.EncuestaProj.mapper;
 
-import java.util.Set;
+import java.util.List;
 
 import com.atsistemas.EncuestaProj.dto.TagDTO;
 import com.atsistemas.EncuestaProj.dto.TagDTOPost;
@@ -10,7 +10,7 @@ public interface TagMapper {
 
 	public Tag tagDtoToDao(TagDTO tagDTO);
 	public TagDTOPost  tagDaoToDto(Tag tag);
-	public Set<Tag> tagsGetDtoToDao(Set<TagDTO> tagsDTO);
-	public Set<TagDTOPost> tagsGetDaoToDto(Set<Tag> tags);
+	public List<Tag> tagsGetDtoToDao(List<TagDTO> tagsDTO);
+	public List<TagDTOPost> tagsGetDaoToDto(List<Tag> tags);
 	
 }
