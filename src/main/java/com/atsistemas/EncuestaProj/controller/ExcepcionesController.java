@@ -12,7 +12,9 @@ import com.atsistemas.EncuestaProj.excepciones.AnswerNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
 import com.atsistemas.EncuestaProj.excepciones.DificultyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.QuestionNotFoundException;
+import com.atsistemas.EncuestaProj.excepciones.ResultNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.SurveyExcedQuestions;
+import com.atsistemas.EncuestaProj.excepciones.SurveyFinishedException;
 import com.atsistemas.EncuestaProj.excepciones.SurveyNotFoundException;
 import com.atsistemas.EncuestaProj.excepciones.SurveyQuestionRepeatedException;
 import com.atsistemas.EncuestaProj.excepciones.TagNotFoundException;
@@ -70,6 +72,17 @@ public class ExcepcionesController {
 	
 	@ExceptionHandler(SurveyExcedQuestions.class)
 	public ResponseEntity<ErrorDTO> QuestionExced(Exception ex){
+		return new ResponseEntity<ErrorDTO>(new ErrorDTO(ex.getMessage()), HttpStatus.NOT_FOUND);
+	}
+	
+	
+	@ExceptionHandler(SurveyFinishedException.class)
+	public ResponseEntity<ErrorDTO> SurveyFinished(Exception ex){
+		return new ResponseEntity<ErrorDTO>(new ErrorDTO(ex.getMessage()), HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(ResultNotFoundException.class)
+	public ResponseEntity<ErrorDTO> existeResult(Exception ex){
 		return new ResponseEntity<ErrorDTO>(new ErrorDTO(ex.getMessage()), HttpStatus.NOT_FOUND);
 	}
 	

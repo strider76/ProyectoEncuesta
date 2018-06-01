@@ -126,7 +126,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		initDatos();
+		//initDatos();
 		
 	}
 

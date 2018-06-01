@@ -7,12 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ResultCourseDTO {
+@NoArgsConstructor
+public class AnswerResDTO {
 
-	private Integer idSurvey;
-	private String surveyName;
-	private double nota;
+	private Integer idAnswer;
+	private String answer;
+	
 	
 }
