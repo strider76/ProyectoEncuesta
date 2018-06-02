@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.atsistemas.EncuestaProj.dto.CourseDTO;
 import com.atsistemas.EncuestaProj.dto.CourseDTOPost;
+import com.atsistemas.EncuestaProj.dto.SurveyDTO;
 import com.atsistemas.EncuestaProj.dto.SurveyDTOPost;
 import com.atsistemas.EncuestaProj.dto.UserDTOPost;
 import com.atsistemas.EncuestaProj.excepciones.CourseNotfoundException;
@@ -90,6 +91,12 @@ public class CourseController {
 	@ResponseStatus(code=HttpStatus.ACCEPTED)
 	public void addUserToCourse(@PathVariable Integer idCourse, @PathVariable Integer idUser) throws NotFoundException {
 		courseService.addUserCourse(idUser, idCourse);
+	}
+	
+	@PostMapping("/{idCourse}/survey")
+	@ResponseStatus(code=HttpStatus.CREATED)
+	public SurveyDTOPost create (@PathVariable Integer idCourse,@RequestBody SurveyDTO suerveyDTO) throws NotFoundException {
+		return surveyMapper.surveyDaoToDto(courseService.createSurvey(surveyMapper.surveyDtoToDao(suerveyDTO),idCourse));
 	}
 	
 	@DeleteMapping("/{idCourse}/user/{idUser}")

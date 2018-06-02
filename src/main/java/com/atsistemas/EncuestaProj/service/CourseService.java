@@ -16,5 +16,6 @@ public interface CourseService extends AbstractService<Course, CourseDTO, Intege
 	public void deleteUserCourse(Integer user, Integer course) throws UserNotFoundException, NotFoundException;
 	public List<User> getAllUserCourse (Integer idCourse) throws NotFoundException;
 	public List<Survey> getAllSurveyCourse(Integer idCourse) throws CourseNotfoundException;
+	public Survey createSurvey(Survey surveyDtoToDao,Integer idCourse) throws NotFoundException;
 	
 }

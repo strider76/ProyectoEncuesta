@@ -70,12 +70,7 @@ public class SurveyController {
 		return surveyMapper.surveyGetDaoToDto(surveyService.findAll(PageRequest.of(pageNumber, pageSize)));
 	}
 	
-	@PostMapping("/course")
-	@ResponseStatus(code=HttpStatus.CREATED)
-	public SurveyDTOPost create (@RequestBody SurveyDTO suerveyDTO) throws NotFoundException {
-		return surveyMapper.surveyDaoToDto(surveyService.create(surveyMapper.surveyDtoToDao(suerveyDTO)));
-	}
-	
+
 	@DeleteMapping("/{idSurvey}")
 	public void delete(@PathVariable Integer idSurvey) throws NotFoundException {
 		surveyService.delete(idSurvey);

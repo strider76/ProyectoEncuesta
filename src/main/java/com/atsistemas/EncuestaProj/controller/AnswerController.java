@@ -1,7 +1,6 @@
 package com.atsistemas.EncuestaProj.controller;
 
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +30,7 @@ public class AnswerController {
 	@Autowired
 	AnswerMapper answerMapper;
 	
-	@PostMapping("/question/{idQuestion}")
+	@PostMapping
 	@ResponseStatus(code=HttpStatus.CREATED)
 	public AnswerDTO create(@RequestBody AnswerDTOPost answer) throws NotFoundException {
 		return answerMapper.answerDaoToDto(answerService.create(answerMapper.answerDtoToDao(answer)));
@@ -53,8 +52,5 @@ public class AnswerController {
 		answerService.update(idAnswer, answerDTO);
 	}
 	
-	@GetMapping("/question/{idQuestion}")
-	public List<AnswerDTOPost> findAllByQuestion(@PathVariable Integer idQuestion) throws NotFoundException {
-		return answerMapper.AnswerGetsDaoToDto(answerService.findAllByQuestion(idQuestion));
-	}
+
 }

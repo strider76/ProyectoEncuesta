@@ -17,6 +17,7 @@ import com.atsistemas.EncuestaProj.model.Course;
 import com.atsistemas.EncuestaProj.model.Survey;
 import com.atsistemas.EncuestaProj.model.User;
 import com.atsistemas.EncuestaProj.service.CourseService;
+import com.atsistemas.EncuestaProj.service.SurveyService;
 import com.atsistemas.EncuestaProj.service.UserService;
 
 @Service
@@ -27,6 +28,9 @@ public class CourseServiceImpl implements CourseService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private SurveyService surveyService;
 	
 	@Override
 	public Course create(Course model) {
@@ -116,6 +120,17 @@ public class CourseServiceImpl implements CourseService {
 		else 
 			throw new CourseNotfoundException("Course no enconrtado con id('"+ idCourse +"')");
 			
+	}
+
+	@Override
+	public Survey createSurvey(Survey survey, Integer idCourse) throws NotFoundException {
+		Optional<Course> courseSearch = courseDAO.findById(idCourse);
+		if (courseSearch.isPresent()){
+			Course course = courseSearch.get();
+			survey.setCourse(course);
+			return surveyService.create(survey);
+		} else
+			throw new CourseNotfoundException("Course no enconrtado con id('"+ idCourse +"')");
 	}
 
 
