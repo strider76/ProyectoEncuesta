@@ -1,5 +1,6 @@
 package com.atsistemas.EncuestaProj.dto;
 
+
 import lombok.Data;
 
 @Data

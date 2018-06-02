@@ -126,7 +126,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		//initDatos();
+		initDatos();
 		
 	}
 
@@ -162,6 +162,7 @@ public class QuestionServiceImpl implements QuestionService {
 		Question question = new Question();
 		question.setDificulty(dificultyService.findByName(dificultad));
 		question.setTag(tagService.findByName(tag));
+		question.setAnswers(new ArrayList<>());
 		question.setName(textoQuestion);
 		return questionDAO.save(question);
 	}

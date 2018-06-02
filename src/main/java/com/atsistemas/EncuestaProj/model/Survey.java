@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 
 import lombok.Data;
@@ -28,9 +29,6 @@ public class Survey {
 	@Column(nullable=false, unique=true)
 	private String identificador;
 	
-	private Boolean esAleatorio;
-	
-	private Boolean esCerrado;
 	
 	@Min(1)
 	private Integer maxPreguntas;
@@ -42,13 +40,18 @@ public class Survey {
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name="cuestionario_pregunta",
 				joinColumns=@JoinColumn(name="id_cuestionario"),
-				inverseJoinColumns=@JoinColumn(name="id_pregunta"))
+				inverseJoinColumns=@JoinColumn(name="id_pregunta"),
+				uniqueConstraints=@UniqueConstraint(columnNames={"id_cuestionario", "id_pregunta"})
+	)
+	
 	private List<Question> preguntas;
 	
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name="cuestionario_tag",
 				joinColumns=@JoinColumn(name="id_cuestionario"),
-				inverseJoinColumns=@JoinColumn(name="id_tag"))
+				inverseJoinColumns=@JoinColumn(name="id_tag"),
+				uniqueConstraints=@UniqueConstraint(columnNames={"id_cuestionario", "id_tag"})
+	)
 	private List<Tag> tags;
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="cuestionario")
@@ -57,7 +60,7 @@ public class Survey {
 	@Override
 	public String toString() {
 		return "Survey [idCuestionario=" + idCuestionario + ", identificador=" + identificador + ", esAleatorio="
-				+ esAleatorio + ", esCerrado=" + esCerrado + ", maxPregunas=" + maxPreguntas + "]";
+				+ ", maxPregunas=" + maxPreguntas + "]";
 	}
 
 

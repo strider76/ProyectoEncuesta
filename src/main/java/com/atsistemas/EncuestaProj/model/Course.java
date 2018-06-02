@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +32,9 @@ public class Course {
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name="user_course",
 				joinColumns=@JoinColumn(name="id_course"),
-				inverseJoinColumns=@JoinColumn(name="id_user"))
+				inverseJoinColumns=@JoinColumn(name="id_user"),
+				uniqueConstraints=@UniqueConstraint(columnNames={"id_course", "id_user"})
+	)
 	private List<User> users;
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy = "course")

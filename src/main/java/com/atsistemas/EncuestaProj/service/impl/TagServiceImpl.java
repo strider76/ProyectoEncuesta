@@ -120,9 +120,9 @@ public class TagServiceImpl implements TagService {
 		tag2.setName("mongodb");
 		tag3.setName("hibernate");
 		
-		tagDAO.save(tag1);
-		tagDAO.save(tag2);
-		tagDAO.save(tag3);
+		if (!tagDAO.findOneByName("jpa").isPresent()) tagDAO.save(tag1);
+		if (!tagDAO.findOneByName("mongodb").isPresent()) tagDAO.save(tag2);
+		if (!tagDAO.findOneByName("hibernate").isPresent()) tagDAO.save(tag3);
 		
 	}
 

@@ -60,7 +60,6 @@ public class SurveyServiceImpl implements SurveyService {
 		Optional<Survey> surveySearch = surveyDAO.findById(idSurvey);
 		if (surveySearch.isPresent()){
 			Survey survey = surveySearch.get();
-			survey.setEsAleatorio(dto.getEsAleatorio());
 			survey.setIdentificador(dto.getIdentificador());
 			survey.setMaxPreguntas(dto.getMaxPreguntas());
 			survey.setCourse(courseService.findById(dto.getIdCourse()));
@@ -95,12 +94,10 @@ public class SurveyServiceImpl implements SurveyService {
 		Optional<Survey> surveySearch = surveyDAO.findById(idSurvey);
 		if (surveySearch.isPresent()) {
 			Survey survey = surveySearch.get();
-			List<Question> questionTags = questionService.findQuestionByTag(survey.getTags()).stream().collect(Collectors.toList());
+			List<Question> questionTags = questionService.findQuestionByTag(survey.getTags());
 			
 			while (questionTags.size()>0 && survey.getPreguntas().size()<survey.getMaxPreguntas())
 				survey.getPreguntas().add(questionTags.remove(ThreadLocalRandom.current().nextInt(0, questionTags.size())));
-			
-			if (survey.getPreguntas().size()==survey.getMaxPreguntas()) {survey.setEsCerrado(true);}
 			surveyDAO.save(survey);
 		} else
 			throw new SurveyNotFoundException("Survey no encontrado idSurvey('"+ idSurvey +"')");

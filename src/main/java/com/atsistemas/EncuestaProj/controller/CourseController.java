@@ -59,6 +59,17 @@ public class CourseController {
 		return courseMapper.courseDaoToDto(courseService.findById(idCourse));
 	}
 	
+	@GetMapping("/{idCourse}/user")
+	public List<UserDTOPost> getUsersCourse(@PathVariable Integer idCourse) throws NotFoundException {
+		return userMapper.userGetDaoToDto(courseService.getAllUserCourse(idCourse));
+	}
+	
+	@GetMapping("/{idCourse}/survey")
+	public List<SurveyDTOPost> getSurveyCourse(@PathVariable Integer idCourse) throws CourseNotfoundException {
+		return surveyMapper.surveyGetDaoToDto(courseService.getAllSurveyCourse(idCourse));
+	}
+	
+	
 	@DeleteMapping("/{idCourse}")
 	public void delete(@PathVariable Integer idCourse) throws NotFoundException {
 		courseService.delete(idCourse);
@@ -86,14 +97,6 @@ public class CourseController {
 		courseService.deleteUserCourse(idUser, idCourse);
 	}	
 	
-	@GetMapping("/{idCourse}/user")
-	public List<UserDTOPost> getUsersCourse(@PathVariable Integer idCourse) throws NotFoundException {
-		return userMapper.userGetDaoToDto(courseService.getAllUserCourse(idCourse));
-	}
 	
-	@GetMapping("/{idCourse}/survey")
-	public List<SurveyDTOPost> getSurveyCourse(@PathVariable Integer idCourse) throws CourseNotfoundException {
-		return surveyMapper.surveyGetDaoToDto(courseService.getAllSurveyCourse(idCourse));
-	}
 	
 }

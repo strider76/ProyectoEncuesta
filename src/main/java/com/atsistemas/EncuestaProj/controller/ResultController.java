@@ -55,7 +55,7 @@ public class ResultController {
 		return resultService.getResultUserCourse(idUser,idCourse);
 	}
 	
-	@GetMapping("/user/{idUser}/survey/{idsurvey}")
+	@GetMapping("/user/{idUser}/survey/{idSurvey}")
 	public List<ResultSurveyDTO> getResultUserSurvey(@PathVariable Integer idUser, @PathVariable Integer idSurvey) throws NotFoundException {
 		return resultService.getResultUserSurvey(idUser,idSurvey);
 	}

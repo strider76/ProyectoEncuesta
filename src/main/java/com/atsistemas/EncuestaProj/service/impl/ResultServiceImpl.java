@@ -59,24 +59,33 @@ public class ResultServiceImpl implements ResultService {
 		User user =userService.findById(idUser);
 		Survey survey = surveyService.findById(idSurvey);
 
-		List<Question> questionSurvey= survey.getPreguntas();
-		questionSurvey.removeAll(resultDAO.findQuestionbyUserAndCuestionario(user, survey));
+		List<Question> questionSurvey=survey.getPreguntas();
+		List<Question> questionAnswered = new ArrayList<>();
+		for (Result curResult : resultDAO.findAllByUserAndCuestionario(user, survey)) 
+			questionAnswered.add(curResult.getQuestion());
+		List<Question> questionBuscar =new ArrayList<>();
+		for (Question question : questionSurvey)
+			if (!questionAnswered.contains(question))
+				questionBuscar.add(question);
 		
-		if (questionSurvey.size()>0) {
-			Collections.shuffle(questionSurvey);
+		
+		if (questionBuscar.size()>0) {
+			Collections.shuffle(questionBuscar);
 			Result result = new Result();
 			result.setUser(user);
 			result.setCuestionario(survey);
 			result.setCourse(survey.getCourse());
 			result.setCreationDate(new Date());
-			result.setQuestion(questionSurvey.get(0));
-			result.setQuestionName(questionSurvey.get(0).getName());
+			result.setQuestion(questionBuscar.get(0));
+			result.setQuestionName(questionBuscar.get(0).getName());
+			result.setAnswer("Sin respuesta");
+			result.setEsCorrecto(false);
 			result = resultDAO.save(result);
 			
 			QuestionResDTO questionsAnswer = new QuestionResDTO();
 			questionsAnswer.setIdQuestion(result.getIdResult());
-			questionsAnswer.setPregunta(questionSurvey.get(0).getName());
-			for (Answer answer : questionSurvey.get(0).getAnswers())
+			questionsAnswer.setPregunta(questionBuscar.get(0).getName());
+			for (Answer answer : questionBuscar.get(0).getAnswers())
 				questionsAnswer.getRespuestas().add(new AnswerResDTO(answer.getIdResultado(),answer.getRespuesta()));
 			return questionsAnswer;
 			
@@ -123,6 +132,8 @@ public class ResultServiceImpl implements ResultService {
 			result.setQuestion(question);
 			result.setQuestionName(question.getName());
 			result.setCreationDate(new Date());
+			result.setAnswer("Sin respuesta");
+			result.setEsCorrecto(false);
 			result = resultDAO.save(result);
 			
 			QuestionResDTO questionRes = new QuestionResDTO();
@@ -170,7 +181,7 @@ public class ResultServiceImpl implements ResultService {
 			ResultCourseDTO resultSurvey = new ResultCourseDTO();
 			resultSurvey.setIdSurvey(survey.getIdCuestionario());
 			resultSurvey.setSurveyName(survey.getIdentificador());
-			resultSurvey.setNota(resultDAO.countByUserAndCuestionarioAndEsCorrectoTrue(user, survey)/survey.getPreguntas().size());
+			resultSurvey.setNota(((double) resultDAO.countByUserAndCuestionarioAndEsCorrectoTrue(user, survey)*10)/survey.getPreguntas().size());
 			resultSurveysCourse.add(resultSurvey);
 		}
 		return resultSurveysCourse;
