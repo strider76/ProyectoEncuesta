@@ -15,13 +15,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Course {
 
+
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer idCourse;
@@ -45,6 +49,9 @@ public class Course {
 		return "Course [idCourse=" + idCourse + ", name=" + name + "]";
 	}
 
+	public Course(String name){
+		this.name =name;
+	}
 	
 	
 }
